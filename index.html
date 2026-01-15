@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ritesh Yadav — Engineering the Signal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GSAP -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <!-- Lenis -->
+  <script src="https://unpkg.com/@studio-freight/lenis"></script>
+
+  <style>
+    /* ------------------ RESET ------------------ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      background: #0b0d12;
+      color: #ffffff;
+      font-family: Inter, system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      cursor: none;
+      transition: background-color 0.4s linear;
+    }
+
+    section {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ------------------ GRAIN ------------------ */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      background-image: url("noise.png");
+      background-repeat: repeat;
+      opacity: 0.04;
+      mix-blend-mode: overlay;
+    }
+
+    /* ------------------ IDENTITY ------------------ */
+    .site-identity {
+      position: fixed;
+      top: 28px;
+      left: 40px;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .site-identity .name {
+      font-size: 14px;
+      letter-spacing: 0.35em;
+      color: rgba(155,124,255,0.95);
+    }
+
+    .site-identity .role {
+      margin-top: 6px;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ------------------ CURSOR ------------------ */
+    .cursor {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border: 1px solid rgba(155,124,255,0.7);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ------------------ SECTION 1: HERO ------------------ */
+    .section--intro {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .parallax {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .layer-back {
+      background-image: url("bg-back.jpg");
+      z-index: 1;
+    }
+
+    .layer-mid {
+      background-image: url("bg-mid.png");
+      z-index: 2;
+    }
+
+    .layer-front {
+      background-image: url("bg-front.png");
+      z-index: 3;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 4;
+      max-width: 900px;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 6rem);
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ------------------ SECTION 2: STICKY QUESTION ------------------ */
+    .section--sticky {
+      height: 250vh;
+    }
+
+    .sticky-wrapper {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sticky-title {
+      font-size: clamp(3rem, 8vw, 7rem);
+      text-align: center;
+      letter-spacing: 0.12em;
+    }
+
+    .floating-metrics {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .floating-metrics div {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0;
+      color: rgba(155,124,255,0.8);
+    }
+
+    /* ------------------ SECTION 3: CASE STUDY ------------------ */
+    .section--case {
+      height: 300vh;
+    }
+
+    .case-pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .case-pin h2 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      letter-spacing: 0.15em;
+    }
+
+    .case-metrics div {
+      position: absolute;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      opacity: 0;
+    }
+
+    /* ------------------ SECTION 4: OPERATOR ------------------ */
+    .section--operator {
+      display: flex;
+      align-items: center;
+      gap: 8vw;
+      padding: 0 10vw;
+    }
+
+    .operator-img {
+      width: 40%;
+      height: 60vh;
+      background: url("portrait.jpg") center / cover no-repeat;
+    }
+
+    .operator-text h3 {
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      margin-bottom: 16px;
+    }
+
+    .operator-text p {
+      line-height: 1.6;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ------------------ SECTION 5: SKILLS ------------------ */
+    .section--skills {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(200px, 1fr));
+      gap: 32px;
+      text-align: center;
+    }
+
+    .skills-grid div {
+      opacity: 0;
+      letter-spacing: 0.15em;
+    }
+
+    /* ------------------ SECTION 6: CONTACT ------------------ */
+    .section--contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .section--contact a {
+      color: #9b7cff;
+      text-decoration: none;
+      letter-spacing: 0.2em;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="cursor"></div>
+
+  <div class="site-identity">
+    <div class="name">RITESH YADAV</div>
+    <div class="role">DATA · SYSTEMS · ANALYTICS</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="section section--intro">
+    <div class="parallax layer-back"></div>
+    <div class="parallax layer-mid"></div>
+    <div class="parallax layer-front"></div>
+
+    <div class="hero">
+      <h1>ENGINEERING<br>THE SIGNAL</h1>
+      <p>FROM DATA CHAOS</p>
+    </div>
+  </section>
+
+  <!-- STICKY QUESTION -->
+  <section class="section section--sticky">
+    <div class="sticky-wrapper">
+      <div class="sticky-title">WHO CONTROLS<br>THE SYSTEM?</div>
+    </div>
+  </section>
+
+  <!-- CASE STUDY -->
+  <section class="section section--case">
+    <div class="case-pin">
+      <h2>FINANCIAL SYSTEM<br>OPTIMIZATION</h2>
+    </div>
+  </section>
+
+  <!-- OPERATOR -->
+  <section class="section section--operator">
+    <div class="operator-img"></div>
+    <div class="operator-text">
+      <h3>THE ANALYST</h3>
+      <p>
+        SQL. Python. Power BI.<br>
+        Turning volatile data into decisions leaders trust.
+      </p>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section section--skills">
+    <div class="skills-grid">
+      <div>DATA CLEANING</div>
+      <div>EDA</div>
+      <div>KPI SYSTEMS</div>
+      <div>FINANCIAL MODELS</div>
+      <div>GENAI WORKFLOWS</div>
+      <div>CONSULTING COMMUNICATION</div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section section--contact">
+    <h3>READY TO BUILD SYSTEMS THAT MATTER?</h3>
+    <a href="https://github.com/riteshhhx" target="_blank">GITHUB</a>
+    <a href="https://linkedin.com/in/ritesh-yadav-49b026202" target="_blank">LINKEDIN</a>
+    <a href="mailto:arritesh123@gmail.com">EMAIL</a>
+  </section>
+
+  <!-- SOUND -->
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* LENIS */
+    const lenis = new Lenis({ lerp: 0.08 });
+    function raf(time) {
+      lenis.raf(time);
+      ScrollTrigger.update();
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    /* CURSOR */
+    const cursor = document.querySelector(".cursor");
+    window.addEventListener("mousemove", e => {
+      gsap.to(cursor, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.15,
+        ease: "power2.out"
+      });
+    });
+
+    /* PARALLAX */
+    gsap.to(".layer-back", { yPercent: 10, scrub: true,
+      scrollTrigger: { trigger: ".section--intro", start: "top bottom", end: "bottom top" }
+    });
+    gsap.to(".layer-mid", { yPercent: 25, scrub: true,
+      scrollTrigger: { trigger: ".section--intro", start: "top bottom", end: "bottom top" }
+    });
+    gsap.to(".layer-front", { yPercent: 40, scrub: true,
+      scrollTrigger: { trigger: ".section--intro", start: "top bottom", end: "bottom top" }
+    });
+
+    /* BACKGROUND SHIFTS */
+    gsap.to("body", {
+      backgroundColor: "#12091f",
+      scrollTrigger: { trigger: ".section--sticky", start: "top bottom", end: "top center", scrub: true }
+    });
+
+    gsap.to("body", {
+      backgroundColor: "#06080c",
+      scrollTrigger: { trigger: ".section--operator", start: "top bottom", end: "top center", scrub: true }
+    });
+
+    /* SKILLS REVEAL */
+    gsap.from(".skills-grid div", {
+      opacity: 0,
+      y: 40,
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: ".section--skills",
+        start: "top 70%"
+      }
+    });
+
+    /* SOUND */
+    const audio = document.getElementById("ambient");
+    audio.volume = 0;
+    audio.play();
+
+    let lastScroll = 0;
+    window.addEventListener("scroll", () => {
+      const delta = Math.abs(window.scrollY - lastScroll);
+      lastScroll = window.scrollY;
+      audio.volume = Math.min(delta / 1200, 0.15);
+    });
+  </script>
+
+</body>
+</html>
