@@ -1,395 +1,372 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Ritesh Yadav — Engineering the Signal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritesh Yadav | Data Analyst Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
-  <!-- GSAP -->
-  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
-  <!-- Lenis -->
-  <script src="https://unpkg.com/@studio-freight/lenis"></script>
+    <style>
+        :root {
+            --primary: #5236d2; /* Purple from video */
+            --accent: #00f0ff;  /* Cyberpunk Cyan */
+            --dark: #0f0f13;
+        }
 
-  <style>
-    /* ------------------ RESET ------------------ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        body {
+            background-color: var(--dark);
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            cursor: default;
+        }
 
-    html, body {
-      height: 100%;
-      background: #0b0d12;
-      color: #ffffff;
-      font-family: Inter, system-ui, sans-serif;
-      overflow-x: hidden;
-    }
+        h1, h2, .font-hero {
+            font-family: 'Syncopate', sans-serif;
+            text-transform: uppercase;
+        }
 
-    body {
-      cursor: none;
-      transition: background-color 0.4s linear;
-    }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
 
-    section {
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-    }
+        /* Utilities */
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            color: transparent;
+        }
+        
+        /* Video Background Utilities */
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
 
-    /* ------------------ GRAIN ------------------ */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 999;
-      pointer-events: none;
-      background-image: url("noise.png");
-      background-repeat: repeat;
-      opacity: 0.04;
-      mix-blend-mode: overlay;
-    }
-
-    /* ------------------ IDENTITY ------------------ */
-    .site-identity {
-      position: fixed;
-      top: 28px;
-      left: 40px;
-      z-index: 100;
-      pointer-events: none;
-    }
-
-    .site-identity .name {
-      font-size: 14px;
-      letter-spacing: 0.35em;
-      color: rgba(155,124,255,0.95);
-    }
-
-    .site-identity .role {
-      margin-top: 6px;
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      color: rgba(255,255,255,0.35);
-    }
-
-    /* ------------------ CURSOR ------------------ */
-    .cursor {
-      position: fixed;
-      width: 18px;
-      height: 18px;
-      border: 1px solid rgba(155,124,255,0.7);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 1000;
-    }
-
-    /* ------------------ SECTION 1: HERO ------------------ */
-    .section--intro {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .parallax {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .layer-back {
-      background-image: url("bg-back.jpg");
-      z-index: 1;
-    }
-
-    .layer-mid {
-      background-image: url("bg-mid.png");
-      z-index: 2;
-    }
-
-    .layer-front {
-      background-image: url("bg-front.png");
-      z-index: 3;
-    }
-
-    .hero {
-      position: relative;
-      z-index: 4;
-      max-width: 900px;
-    }
-
-    .hero h1 {
-      font-size: clamp(3rem, 7vw, 6rem);
-      letter-spacing: 0.08em;
-      margin-bottom: 24px;
-    }
-
-    .hero p {
-      font-size: 1rem;
-      letter-spacing: 0.25em;
-      color: rgba(255,255,255,0.6);
-    }
-
-    /* ------------------ SECTION 2: STICKY QUESTION ------------------ */
-    .section--sticky {
-      height: 250vh;
-    }
-
-    .sticky-wrapper {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .sticky-title {
-      font-size: clamp(3rem, 8vw, 7rem);
-      text-align: center;
-      letter-spacing: 0.12em;
-    }
-
-    .floating-metrics {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .floating-metrics div {
-      position: absolute;
-      font-size: 1.2rem;
-      opacity: 0;
-      color: rgba(155,124,255,0.8);
-    }
-
-    /* ------------------ SECTION 3: CASE STUDY ------------------ */
-    .section--case {
-      height: 300vh;
-    }
-
-    .case-pin {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .case-pin h2 {
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      letter-spacing: 0.15em;
-    }
-
-    .case-metrics div {
-      position: absolute;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      opacity: 0;
-    }
-
-    /* ------------------ SECTION 4: OPERATOR ------------------ */
-    .section--operator {
-      display: flex;
-      align-items: center;
-      gap: 8vw;
-      padding: 0 10vw;
-    }
-
-    .operator-img {
-      width: 40%;
-      height: 60vh;
-      background: url("portrait.jpg") center / cover no-repeat;
-    }
-
-    .operator-text h3 {
-      font-size: clamp(2.5rem, 4vw, 4rem);
-      margin-bottom: 16px;
-    }
-
-    .operator-text p {
-      line-height: 1.6;
-      color: rgba(255,255,255,0.7);
-    }
-
-    /* ------------------ SECTION 5: SKILLS ------------------ */
-    .section--skills {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(200px, 1fr));
-      gap: 32px;
-      text-align: center;
-    }
-
-    .skills-grid div {
-      opacity: 0;
-      letter-spacing: 0.15em;
-    }
-
-    /* ------------------ SECTION 6: CONTACT ------------------ */
-    .section--contact {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-    }
-
-    .section--contact a {
-      color: #9b7cff;
-      text-decoration: none;
-      letter-spacing: 0.2em;
-    }
-  </style>
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+    </style>
 </head>
+<body class="antialiased">
 
-<body>
-
-  <div class="cursor"></div>
-
-  <div class="site-identity">
-    <div class="name">RITESH YADAV</div>
-    <div class="role">DATA · SYSTEMS · ANALYTICS</div>
-  </div>
-
-  <!-- HERO -->
-  <section class="section section--intro">
-    <div class="parallax layer-back"></div>
-    <div class="parallax layer-mid"></div>
-    <div class="parallax layer-front"></div>
-
-    <div class="hero">
-      <h1>ENGINEERING<br>THE SIGNAL</h1>
-      <p>FROM DATA CHAOS</p>
+    <!-- Loading Screen -->
+    <div class="loader">
+        <div class="text-2xl font-hero tracking-widest animate-pulse">Loading Experience...</div>
     </div>
-  </section>
 
-  <!-- STICKY QUESTION -->
-  <section class="section section--sticky">
-    <div class="sticky-wrapper">
-      <div class="sticky-title">WHO CONTROLS<br>THE SYSTEM?</div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center mix-blend-difference text-white">
+        <div class="font-hero font-bold text-xl tracking-tighter">RY.</div>
+        <div class="hidden md:flex gap-8 text-xs font-bold tracking-widest uppercase">
+            <a href="#about" class="hover:text-cyan-400 transition">The Analyst</a>
+            <a href="#work" class="hover:text-cyan-400 transition">Projects</a>
+            <a href="#skills" class="hover:text-cyan-400 transition">Factions</a>
+        </div>
+        <a href="mailto:arritesh123@gmail.com" class="border border-white px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-white hover:text-black transition duration-300">
+            Contact
+        </a>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <div id="main">
+
+        <!-- SECTION 1: HERO (Junction 1 - The Start) -->
+        <section class="relative h-screen w-full overflow-hidden flex items-center justify-center" id="hero">
+            <!-- Video Background 1: The City/Junction 1 -->
+            <video class="video-bg opacity-60 scale-110" id="hero-video" autoplay muted loop playsinline>
+                <!-- STARTING VIDEO -->
+                <source src="Video_Generation_Request_Fulfilled.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0f0f13] via-transparent to-transparent z-0"></div>
+
+            <!-- Hero Text -->
+            <div class="relative z-10 text-center w-full px-4">
+                <p class="text-cyan-400 font-bold tracking-[0.3em] text-xs mb-4 opacity-0 hero-anim">DATA ANALYST & STRATEGIST</p>
+                <h1 class="text-5xl md:text-8xl lg:text-9xl font-bold leading-none mix-blend-overlay opacity-0 hero-anim">
+                    ANALYZE.<br>
+                    PREDICT.<br>
+                    OPTIMIZE.
+                </h1>
+                <p class="mt-8 max-w-md mx-auto text-gray-200 text-sm leading-relaxed opacity-0 hero-anim font-medium">
+                    Ritesh Yadav is a data professional focused on extracting actionable insights, 
+                    automating dashboards, and empowering business decisions.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: INTRO (The "Familiar World" Section) -->
+        <section class="min-h-screen w-full bg-[#0f0f13] relative py-24 flex flex-col justify-center" id="about">
+            <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-16">
+                
+                <!-- Left Image Card -->
+                <div class="w-full md:w-1/2 relative group">
+                    <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-cyan-400 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative overflow-hidden rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" 
+                             class="w-full object-cover transform transition duration-700 hover:scale-110 grayscale hover:grayscale-0" alt="Data Analytics">
+                    </div>
+                </div>
+
+                <!-- Right Text -->
+                <div class="w-full md:w-1/2 space-y-8">
+                    <div class="text-xs font-bold text-purple-500 tracking-widest uppercase mb-2">001 // The Profile</div>
+                    <h2 class="text-4xl md:text-6xl font-bold leading-tight">
+                        A COMPLEX WORLD...<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">DECODED BY DATA.</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Isolated within the noise of raw data, businesses struggle to avoid descending into chaos.
+                        <br><br>
+                        As a <strong class="text-white">Financial & Data Analyst</strong>, I serve as an agent of clarity.
+                        From <span class="text-cyan-400">Reias India Real Estate</span> to <span class="text-cyan-400">The Times of India</span>, 
+                        I have built automated dashboards, optimized costs by 10%, and translated complex numbers into storytelling insights.
+                    </p>
+                    
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-800">
+                        <div>
+                            <div class="text-3xl font-hero font-bold text-white">15%</div>
+                            <div class="text-xs text-gray-500 tracking-widest mt-1">REPORTING TIME REDUCED</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-hero font-bold text-white">10%</div>
+                            <div class="text-xs text-gray-500 tracking-widest mt-1">COST REDUCTION</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: IMMERSIVE VIDEO (Travelling to Junction 2) -->
+        <section class="h-screen w-full relative overflow-hidden flex items-center justify-center bg-black" id="immersive">
+            <!-- Video Background 2: The Travelling/Car Video -->
+            <video class="video-bg opacity-50" autoplay muted loop playsinline>
+                <!-- TRAVELLING VIDEO -->
+                <source src="Video_Generation_From_Junction.mp4" type="video/mp4">
+            </video>
+            
+            <div class="z-10 text-center max-w-4xl px-6 relative">
+                <h2 class="text-3xl md:text-5xl font-bold leading-tight uppercase mb-8">
+                    You are a Decision Maker.<br>
+                    <span class="text-purple-500">Will you choose to guess?</span><br>
+                    Or will you choose to <span class="text-cyan-400">Know?</span>
+                </h2>
+                <p class="text-gray-200 bg-black/50 p-4 rounded-lg inline-block backdrop-blur-sm">
+                    Leveraging Python, SQL, and Power BI to transform uncertainty into strategy.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: HORIZONTAL SCROLL (The "Collectibles" Section) -->
+        <section class="py-20 bg-[#0f0f13] overflow-hidden" id="work">
+            <div class="container mx-auto px-6 mb-12">
+                <h2 class="text-4xl md:text-7xl font-hero font-bold text-white mb-4">PROJECTS</h2>
+                <p class="text-purple-400 tracking-widest uppercase text-sm">Selected Works & Case Studies</p>
+            </div>
+
+            <!-- The Horizontal Track -->
+            <div class="flex flex-nowrap gap-8 pl-6 md:pl-20 pb-20 w-max" id="horizontal-track">
+                
+                <!-- Card 1 -->
+                <div class="w-[85vw] md:w-[600px] h-[400px] md:h-[500px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-purple-500 transition duration-500 group relative overflow-hidden shrink-0">
+                    <div class="absolute top-0 right-0 p-32 bg-purple-600 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-40 transition"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="text-5xl font-hero text-gray-700 group-hover:text-white transition">01</span>
+                            <i class="ri-arrow-right-up-line text-2xl text-gray-500 group-hover:text-cyan-400 transition"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2">Thermo-Lock Pro</h3>
+                        <p class="text-gray-400 text-sm">Cost Accounting & Target Costing</p>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                            Conducted detailed cost breakdown of material and labor. Identified gaps vs target cost and proposed value-engineering strategies.
+                        </p>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Excel</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Cost Analysis</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="w-[85vw] md:w-[600px] h-[400px] md:h-[500px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-cyan-500 transition duration-500 group relative overflow-hidden shrink-0">
+                    <div class="absolute top-0 right-0 p-32 bg-cyan-600 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-40 transition"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="text-5xl font-hero text-gray-700 group-hover:text-white transition">02</span>
+                            <i class="ri-arrow-right-up-line text-2xl text-gray-500 group-hover:text-cyan-400 transition"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2">GenAI Analytics</h3>
+                        <p class="text-gray-400 text-sm">Forage Simulation</p>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                            Conducted EDA and risk profiling. Interpreted ML outputs for delinquency prediction and prepared analytical QA notes.
+                        </p>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Python</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">EDA</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">ML</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="w-[85vw] md:w-[600px] h-[400px] md:h-[500px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-pink-500 transition duration-500 group relative overflow-hidden shrink-0">
+                    <div class="absolute top-0 right-0 p-32 bg-pink-600 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-40 transition"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="text-5xl font-hero text-gray-700 group-hover:text-white transition">03</span>
+                            <i class="ri-arrow-right-up-line text-2xl text-gray-500 group-hover:text-cyan-400 transition"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2">Financial Dashboards</h3>
+                        <p class="text-gray-400 text-sm">Portfolio Project</p>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                            Built multi-year financial trend dashboards. Automated visual reporting for KPIs and translated raw data into decision-oriented insights.
+                        </p>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Power BI</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Visualization</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 5: FOOTER -->
+        <footer class="bg-black py-24 border-t border-gray-900 relative">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-5xl md:text-9xl font-hero font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-900 mb-8 opacity-50 hover:opacity-100 transition duration-500 cursor-pointer">
+                    LET'S TALK
+                </h2>
+                
+                <div class="flex flex-wrap justify-center gap-6 mb-12">
+                    <a href="https://linkedin.com/in/ritesh-yadav-49b026202" class="px-8 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition">LinkedIn</a>
+                    <a href="https://github.com/riteshhhx" class="px-8 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition">GitHub</a>
+                    <a href="mailto:arritesh123@gmail.com" class="px-8 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition">Email</a>
+                </div>
+
+                <div class="text-gray-600 text-sm">
+                    &copy; 2024 Ritesh Yadav. Inspired by KPR. Built with Code.
+                </div>
+            </div>
+        </footer>
+
     </div>
-  </section>
 
-  <!-- CASE STUDY -->
-  <section class="section section--case">
-    <div class="case-pin">
-      <h2>FINANCIAL SYSTEM<br>OPTIMIZATION</h2>
-    </div>
-  </section>
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        // Register GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
 
-  <!-- OPERATOR -->
-  <section class="section section--operator">
-    <div class="operator-img"></div>
-    <div class="operator-text">
-      <h3>THE ANALYST</h3>
-      <p>
-        SQL. Python. Power BI.<br>
-        Turning volatile data into decisions leaders trust.
-      </p>
-    </div>
-  </section>
+        // Loader Animation
+        window.addEventListener("load", () => {
+            const tl = gsap.timeline();
+            tl.to(".loader", {
+                yPercent: -100,
+                duration: 1.2,
+                ease: "power4.inOut",
+                delay: 0.5
+            })
+            .to(".hero-anim", {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            }, "-=0.5");
+        });
 
-  <!-- SKILLS -->
-  <section class="section section--skills">
-    <div class="skills-grid">
-      <div>DATA CLEANING</div>
-      <div>EDA</div>
-      <div>KPI SYSTEMS</div>
-      <div>FINANCIAL MODELS</div>
-      <div>GENAI WORKFLOWS</div>
-      <div>CONSULTING COMMUNICATION</div>
-    </div>
-  </section>
+        // Parallax Hero
+        gsap.to("#hero-bg", {
+            scrollTrigger: {
+                trigger: "#hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            },
+            yPercent: 30,
+            scale: 1.2
+        });
 
-  <!-- CONTACT -->
-  <section class="section section--contact">
-    <h3>READY TO BUILD SYSTEMS THAT MATTER?</h3>
-    <a href="https://github.com/riteshhhx" target="_blank">GITHUB</a>
-    <a href="https://linkedin.com/in/ritesh-yadav-49b026202" target="_blank">LINKEDIN</a>
-    <a href="mailto:arritesh123@gmail.com">EMAIL</a>
-  </section>
+        // Intro Section Text Reveal
+        gsap.from("#about h2", {
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top 80%",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out"
+        });
 
-  <!-- SOUND -->
-  <audio id="ambient" src="ambient.mp3" loop></audio>
+        // Immersive Section Scale Effect
+        gsap.from("#immersive h2", {
+            scrollTrigger: {
+                trigger: "#immersive",
+                start: "top 70%",
+                end: "bottom top",
+                scrub: 1
+            },
+            scale: 0.8,
+            opacity: 0
+        });
 
-  <script>
-    gsap.registerPlugin(ScrollTrigger);
-
-    /* LENIS */
-    const lenis = new Lenis({ lerp: 0.08 });
-    function raf(time) {
-      lenis.raf(time);
-      ScrollTrigger.update();
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    /* CURSOR */
-    const cursor = document.querySelector(".cursor");
-    window.addEventListener("mousemove", e => {
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.15,
-        ease: "power2.out"
-      });
-    });
-
-    /* PARALLAX */
-    gsap.to(".layer-back", { yPercent: 10, scrub: true,
-      scrollTrigger: { trigger: ".section--intro", start: "top bottom", end: "bottom top" }
-    });
-    gsap.to(".layer-mid", { yPercent: 25, scrub: true,
-      scrollTrigger: { trigger: ".section--intro", start: "top bottom", end: "bottom top" }
-    });
-    gsap.to(".layer-front", { yPercent: 40, scrub: true,
-      scrollTrigger: { trigger: ".section--intro", start: "top bottom", end: "bottom top" }
-    });
-
-    /* BACKGROUND SHIFTS */
-    gsap.to("body", {
-      backgroundColor: "#12091f",
-      scrollTrigger: { trigger: ".section--sticky", start: "top bottom", end: "top center", scrub: true }
-    });
-
-    gsap.to("body", {
-      backgroundColor: "#06080c",
-      scrollTrigger: { trigger: ".section--operator", start: "top bottom", end: "top center", scrub: true }
-    });
-
-    /* SKILLS REVEAL */
-    gsap.from(".skills-grid div", {
-      opacity: 0,
-      y: 40,
-      stagger: 0.15,
-      scrollTrigger: {
-        trigger: ".section--skills",
-        start: "top 70%"
-      }
-    });
-
-    /* SOUND */
-    const audio = document.getElementById("ambient");
-    audio.volume = 0;
-    audio.play();
-
-    let lastScroll = 0;
-    window.addEventListener("scroll", () => {
-      const delta = Math.abs(window.scrollY - lastScroll);
-      lastScroll = window.scrollY;
-      audio.volume = Math.min(delta / 1200, 0.15);
-    });
-  </script>
-
+        // Horizontal Scroll for Projects
+        let sections = gsap.utils.toArray("#horizontal-track div.shrink-0");
+        
+        let scrollTween = gsap.to(sections, {
+            xPercent: -100 * (sections.length - 1),
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#work",
+                pin: true,
+                scrub: 1,
+                // Adjust this end value to control how long the scroll takes
+                end: "+=3000", 
+            }
+        });
+    </script>
 </body>
 </html>
