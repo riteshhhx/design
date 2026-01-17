@@ -63,14 +63,14 @@
         }
         .video-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5,5,5,0.8), rgba(5,5,5,0.95));
+            background: linear-gradient(to bottom, rgba(5,5,5,0.7), rgba(5,5,5,0.9));
             z-index: 1;
         }
         .video-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; opacity: 0; transition: opacity 1.5s ease;
+            object-fit: cover; 
+            opacity: 1; 
         }
-        .video-layer.active { opacity: 0.6; }
 
         /* Holographic Card Styles */
         .holo-card {
@@ -114,12 +114,12 @@
         </div>
     </div>
 
-    <!-- Background Videos -->
+    <!-- Background Video (Scroll Controlled) -->
     <div class="video-container">
         <div class="video-overlay"></div>
-        <video class="video-layer active" id="vid-hero" autoplay muted loop playsinline><source src="Video_Generation_Request_Fulfilled.mp4" type="video/mp4"></video>
-        <video class="video-layer" id="vid-travel" autoplay muted loop playsinline><source src="Video_Generation_From_Junction.mp4" type="video/mp4"></video>
-        <video class="video-layer" id="vid-cloud" autoplay muted loop playsinline><source src="Video_Generation_From_Image.mp4" type="video/mp4"></video>
+        <video class="video-layer" id="scroll-video" muted playsinline loop>
+            <source src="db4c202e81dd4912a9631fcb5b10d103.mov" type="video/mp4">
+        </video>
     </div>
 
     <!-- Navigation -->
@@ -192,6 +192,8 @@
                                 <div>> LOC: DELHI, IN</div>
                                 <div>> STATUS: ONLINE</div>
                                 <div>> CLR: ALPHA</div>
+                                <div>> SPEC: RISK MGMT</div>
+                                <div>> ALIGN: CONSULTING</div>
                             </div>
                         </div>
                     </div>
@@ -251,6 +253,27 @@
                             <i class="fas fa-brain text-5xl text-gray-600 group-hover:text-pink-400 transition mb-6 block"></i>
                             <h3 class="text-lg font-bold tracking-widest">GEN AI</h3>
                             <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">LLMs / Automation</p>
+                        </div>
+                        <!-- New Skills -->
+                        <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fas fa-chart-line text-5xl text-gray-600 group-hover:text-green-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">RISK MGMT</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">Auditing / Diagnostics</p>
+                        </div>
+                        <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fas fa-file-excel text-5xl text-gray-600 group-hover:text-green-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">ADV EXCEL</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">VBA / Macros / Modeling</p>
+                        </div>
+                         <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fas fa-search text-5xl text-gray-600 group-hover:text-blue-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">LOOKER</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">Google Cloud BI</p>
+                        </div>
+                         <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fas fa-users text-5xl text-gray-600 group-hover:text-orange-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">CONSULTING</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">Strategy / Communication</p>
                         </div>
                     </div>
                 </div>
@@ -325,6 +348,25 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Project 4 (New) -->
+                    <div class="project-card min-w-[85vw] md:min-w-[600px] h-[70vh] bg-[#0a0a0a] border border-white/10 relative group overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-700 scale-100 group-hover:scale-110" alt="GenAI">
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-10 z-20">
+                            <div class="text-6xl font-hero text-white/10 absolute -top-10 left-10">04</div>
+                            <h3 class="text-3xl font-bold mb-2 relative">GenAI Workflows</h3>
+                            <p class="text-pink-400 text-xs font-mono mb-6">PROCESS AUTOMATION & CLASSIFICATION</p>
+                            <p class="text-gray-300 max-w-md text-sm leading-relaxed mb-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-500">
+                                Built workflows for summarization & pattern extraction. Applied structured testing logic to datasets.
+                            </p>
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">GenAI Studio</span>
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">Automation</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -346,6 +388,7 @@
                             <h3 class="text-2xl font-bold text-white mb-2">Gold Medalist</h3>
                             <p class="text-gray-400 text-sm font-mono uppercase tracking-wide">All India Football Championship</p>
                             <p class="text-xs text-gray-600 mt-2">2019</p>
+                            <p class="text-[10px] text-gray-500 mt-1 max-w-[200px]">Demonstrated leadership, pressure-handling, and discipline through high-performance teamwork.</p>
                         </div>
                         
                         <!-- Trophy 2 -->
@@ -356,6 +399,7 @@
                             <h3 class="text-2xl font-bold text-white mb-2">1st Runner-Up</h3>
                             <p class="text-gray-400 text-sm font-mono uppercase tracking-wide">State Olympic Games</p>
                             <p class="text-xs text-gray-600 mt-2">2019</p>
+                            <p class="text-[10px] text-gray-500 mt-1 max-w-[200px]">Competed in Open Category demonstrating strong athletic discipline and resilience.</p>
                         </div>
                     </div>
                 </div>
@@ -416,6 +460,18 @@
                                     <i class="ri-verified-badge-fill text-cyan-400"></i>
                                     <span class="text-sm font-mono text-gray-300">Adv Excel (Coursera)</span>
                                 </div>
+                                <div class="holo-card p-4 flex items-center gap-3 hover:bg-cyan-900/10 cursor-help transition" title="Verified">
+                                    <i class="ri-verified-badge-fill text-cyan-400"></i>
+                                    <span class="text-sm font-mono text-gray-300">Accelerate Job Search w/ AI</span>
+                                </div>
+                                <div class="holo-card p-4 flex items-center gap-3 hover:bg-cyan-900/10 cursor-help transition" title="Verified">
+                                    <i class="ri-verified-badge-fill text-cyan-400"></i>
+                                    <span class="text-sm font-mono text-gray-300">Intro to GenAI Studio</span>
+                                </div>
+                                <div class="holo-card p-4 flex items-center gap-3 hover:bg-cyan-900/10 cursor-help transition" title="Verified">
+                                    <i class="ri-verified-badge-fill text-cyan-400"></i>
+                                    <span class="text-sm font-mono text-gray-300">Introduction to Generative AI</span>
+                                </div>
                             </div>
                         </div>
 
@@ -430,9 +486,9 @@
                     CONNECT
                 </h2>
                 <div class="flex gap-8 mt-12 relative z-10">
-                    <a href="#" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">LinkedIn</a>
-                    <a href="#" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">GitHub</a>
-                    <a href="#" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">Email</a>
+                    <a href="https://linkedin.com/in/ritesh-yadav-49b026202" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">LinkedIn</a>
+                    <a href="https://github.com/riteshhhx" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">GitHub</a>
+                    <a href="mailto:arritesh123@gmail.com" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">Email</a>
                 </div>
             </footer>
 
@@ -474,22 +530,24 @@
             }, { duration: 500, fill: "forwards" });
         });
 
-        // Background Video Switcher
-        const videos = {
-            hero: document.getElementById('vid-hero'),
-            travel: document.getElementById('vid-travel'),
-            cloud: document.getElementById('vid-cloud')
-        };
+        // Scroll to Play Video Logic (REPLACES multi-video logic)
+        const scrollVideo = document.getElementById('scroll-video');
+        let scrollTimeout;
 
-        function activateVideo(vidId) {
-            Object.values(videos).forEach(v => v.classList.remove('active'));
-            videos[vidId].classList.add('active');
-            videos[vidId].play();
-        }
-
-        ScrollTrigger.create({ trigger: "#hero", start: "top center", onEnter: () => activateVideo('hero'), onEnterBack: () => activateVideo('hero') });
-        ScrollTrigger.create({ trigger: "#skills", start: "top center", onEnter: () => activateVideo('travel'), onEnterBack: () => activateVideo('travel') });
-        ScrollTrigger.create({ trigger: "#work", start: "top center", onEnter: () => activateVideo('cloud'), onEnterBack: () => activateVideo('cloud') });
+        window.addEventListener('scroll', () => {
+            // Play when scrolling
+            if (scrollVideo.paused) {
+                scrollVideo.play().catch(e => console.log("Auto-play prevented", e)); 
+            }
+            
+            // Clear existing timeout
+            window.clearTimeout(scrollTimeout);
+            
+            // Set timeout to pause after scrolling stops
+            scrollTimeout = setTimeout(() => {
+                scrollVideo.pause();
+            }, 100); // 100ms pause delay for smoother stop
+        });
 
         // Sticky Profile Text Fade Logic
         const revealElements = document.querySelectorAll(".scroll-reveal");
