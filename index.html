@@ -108,14 +108,30 @@
             text-shadow: 0 0 10px var(--accent);
         }
 
-        /* Timeline */
-        .timeline-line {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        /* Mission Card (Experience) */
+        .mission-card {
+            background: rgba(26, 26, 31, 0.6);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #333;
+            transition: all 0.4s ease;
+        }
+        .mission-card.active {
+            background: rgba(26, 26, 31, 1);
+            border-left-color: var(--accent);
+            box-shadow: -5px 0 20px rgba(0, 240, 255, 0.1);
+        }
+        .mission-card .content-wrapper {
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: none; /* Handled by GSAP */
+        }
+        .mission-card .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        .mission-card.active .toggle-icon {
+            transform: rotate(180deg);
+            color: var(--accent);
         }
 
         /* Loader */
@@ -132,6 +148,30 @@
             align-items: center;
             color: white;
         }
+
+        /* Video Background Container */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .video-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .video-layer.active {
+            opacity: 0.5; /* Adjusted opacity for background */
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -139,6 +179,22 @@
     <!-- Loading Screen -->
     <div class="loader">
         <div class="text-2xl font-hero tracking-widest animate-pulse">Loading Experience...</div>
+    </div>
+
+    <!-- Global Video Backgrounds -->
+    <div class="video-container">
+        <!-- Hero Background -->
+        <video class="video-layer active" id="bg-video-1" autoplay muted loop playsinline>
+            <source src="Video_Generation_Request_Fulfilled.mp4" type="video/mp4">
+        </video>
+        <!-- Transition/Travel Background -->
+        <video class="video-layer" id="bg-video-2" autoplay muted loop playsinline>
+            <source src="Video_Generation_From_Junction.mp4" type="video/mp4">
+        </video>
+         <!-- Image Gen Background -->
+        <video class="video-layer" id="bg-video-3" autoplay muted loop playsinline>
+             <source src="Video_Generation_From_Image.mp4" type="video/mp4">
+        </video>
     </div>
 
     <!-- Navigation -->
@@ -160,7 +216,8 @@
 
         <!-- SECTION 1: HERO (Junction 1) -->
         <section class="relative h-screen w-full overflow-hidden flex items-center justify-center md:justify-start" id="hero">
-            <img src="ChatGPT%20Image%20Jan%2015%2C%202026%20at%2007_04_02%20PM.jpg" class="hero-bg-img scale-110" id="hero-bg" alt="Cyberpunk City Background">
+            <!-- Background handled by global video container now -->
+            <!-- Character Portrait -->
             <img src="portrait.jpg" class="hero-character hidden md:block" id="hero-char" alt="Ritesh Avatar">
             
             <div class="absolute inset-0 bg-gradient-to-t from-[#0f0f13] via-black/20 to-transparent z-0"></div>
@@ -180,7 +237,7 @@
         </section>
 
         <!-- SECTION 2: INTRO (Profile) -->
-        <section class="min-h-screen w-full bg-[#0f0f13] relative py-24 flex flex-col justify-center" id="about">
+        <section class="min-h-screen w-full bg-[#0f0f13]/80 relative py-24 flex flex-col justify-center backdrop-blur-sm" id="about">
             <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-16">
                 <div class="w-full md:w-1/2 relative group">
                     <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-cyan-400 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
@@ -218,7 +275,7 @@
         </section>
 
         <!-- SECTION 3: SKILLS (Capabilities) -->
-        <section class="py-24 bg-[#0f0f13] relative" id="skills">
+        <section class="py-24 bg-[#0f0f13]/90 relative backdrop-blur-sm" id="skills">
             <div class="container mx-auto px-6">
                 <div class="mb-16">
                     <div class="text-xs font-bold text-cyan-400 tracking-widest uppercase mb-2">002 // The Arsenal</div>
@@ -275,11 +332,8 @@
         </section>
 
         <!-- SECTION 4: IMMERSIVE VIDEO TRANSITION -->
-        <section class="h-screen w-full relative overflow-hidden flex items-center justify-center bg-black" id="immersive">
-            <video class="video-bg opacity-50" autoplay muted loop playsinline>
-                <source src="Video_Generation_From_Junction.mp4" type="video/mp4">
-            </video>
-            
+        <section class="h-screen w-full relative overflow-hidden flex items-center justify-center bg-transparent" id="immersive">
+             <!-- Background handled by global video container -->
             <div class="z-10 text-center max-w-4xl px-6 relative">
                 <h2 class="text-3xl md:text-5xl font-bold leading-tight uppercase mb-8">
                     Transforming Uncertainty<br>
@@ -293,44 +347,97 @@
             </div>
         </section>
 
-        <!-- SECTION 5: EXPERIENCE (Mission Log) -->
-        <section class="py-24 bg-[#0f0f13] relative" id="experience">
-            <div class="container mx-auto px-6 max-w-5xl">
+        <!-- SECTION 5: EXPERIENCE (Mission Log - Interactive) -->
+        <section class="py-24 bg-[#0f0f13]/90 relative backdrop-blur-sm" id="experience">
+            <div class="container mx-auto px-6 max-w-4xl">
                 <div class="mb-16">
                     <div class="text-xs font-bold text-purple-500 tracking-widest uppercase mb-2">003 // Mission Log</div>
                     <h2 class="text-4xl md:text-6xl font-bold text-white">EXPERIENCE</h2>
                 </div>
 
-                <div class="relative pl-8 md:pl-12 border-l border-gray-800 space-y-16">
-                    <!-- Job 1 -->
-                    <div class="relative experience-item">
-                        <div class="absolute -left-[41px] md:-left-[57px] top-0 w-5 h-5 bg-purple-600 rounded-full border-4 border-[#0f0f13]"></div>
-                        <div class="mb-2 flex flex-col md:flex-row md:items-center justify-between">
-                            <h3 class="text-2xl font-bold text-white">Financial Analyst</h3>
-                            <span class="text-sm font-mono text-cyan-400">2023 – 2024</span>
+                <div class="space-y-6">
+                    <!-- Mission Card 1 -->
+                    <div class="mission-card cursor-pointer border-t border-r border-b border-gray-800 p-8 rounded-xl relative overflow-hidden group" onclick="toggleMission(this)">
+                        <div class="flex justify-between items-center relative z-10">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors">Financial Analyst</h3>
+                                <p class="text-xs text-gray-500 font-mono mt-1 uppercase tracking-widest">Reias India Real Estate Pvt. Ltd | Sept 2023 – March 2024</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-600 text-xl toggle-icon"></i>
                         </div>
-                        <div class="text-gray-400 mb-4 font-bold uppercase tracking-wide">Reias India Real Estate Pvt. Ltd</div>
-                        <ul class="space-y-3 text-gray-300 list-disc pl-5">
-                            <li>Extracted and analyzed financial/operational data to support strategic business decisions.</li>
-                            <li>Built automated revenue/cost dashboards in Excel/Power BI, reducing reporting turnaround time by 15%.</li>
-                            <li>Performed data validation checks and identified cost drivers, leading to a 10% reduction in unnecessary costs.</li>
-                            <li>Prepared insight-driven presentations for management and identified control gaps.</li>
-                        </ul>
+                        
+                        <div class="content-wrapper relative z-10">
+                            <div class="pt-6 border-t border-gray-800 mt-6">
+                                <ul class="space-y-4 text-gray-300">
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-purple-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Extracted and analyzed financial and operational data to support strategic business decisions and budgeting cycles.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-purple-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Built automated revenue/cost dashboards in Excel & Power BI, reducing reporting turnaround time by 15%.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-purple-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Conducted deep-dive audits of operational expenses, identifying inefficiencies that led to a 10% reduction in unnecessary costs.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-purple-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Performed data validation checks and compared results against control totals to ensure output sanity.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-purple-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Redesigned data validation processes to improve reporting accuracy and highlighted key control gaps.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-purple-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Identified key risk factors in overhead allocation and prepared insight-driven presentations for management review.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Background Glow on Hover/Active -->
+                        <div class="absolute top-0 right-0 p-32 bg-purple-900/10 rounded-full filter blur-[60px] opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"></div>
                     </div>
 
-                    <!-- Job 2 -->
-                    <div class="relative experience-item">
-                        <div class="absolute -left-[41px] md:-left-[57px] top-0 w-5 h-5 bg-cyan-600 rounded-full border-4 border-[#0f0f13]"></div>
-                        <div class="mb-2 flex flex-col md:flex-row md:items-center justify-between">
-                            <h3 class="text-2xl font-bold text-white">Sales & Marketing Analyst (Intern)</h3>
-                            <span class="text-sm font-mono text-cyan-400">Jun 2024 – Jul 2024</span>
+                    <!-- Mission Card 2 -->
+                    <div class="mission-card cursor-pointer border-t border-r border-b border-gray-800 p-8 rounded-xl relative overflow-hidden group" onclick="toggleMission(this)">
+                        <div class="flex justify-between items-center relative z-10">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors">Sales & Marketing Analyst (Intern)</h3>
+                                <p class="text-xs text-gray-500 font-mono mt-1 uppercase tracking-widest">The Times of India | Jun 2024 – Jul 2024</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-600 text-xl toggle-icon"></i>
                         </div>
-                        <div class="text-gray-400 mb-4 font-bold uppercase tracking-wide">The Times of India</div>
-                        <ul class="space-y-3 text-gray-300 list-disc pl-5">
-                            <li>Analyzed customer data and campaign performance metrics to optimize marketing strategies.</li>
-                            <li>Created weekly dashboards and reporting decks for cross-functional teams.</li>
-                            <li>Strengthened communication required for client discussions and requirement capture.</li>
-                        </ul>
+                        
+                        <div class="content-wrapper relative z-10">
+                            <div class="pt-6 border-t border-gray-800 mt-6">
+                                <ul class="space-y-4 text-gray-300">
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-cyan-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Executed market segmentation analysis using consumer data to support targeted campaign strategies.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-cyan-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Monitored campaign KPIs and created weekly insight decks for cross-functional leadership teams.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-cyan-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Delivered competitive analysis reports within tight deadlines to enhance strategic decision-making.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-cyan-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Collaborated with cross-functional marketing and sales teams to align data insights with business goals.</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <i class="fas fa-check-circle text-cyan-500 mt-1 text-xs shrink-0"></i>
+                                        <span>Strengthened communication required for client discussions and requirement capture.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                         <!-- Background Glow on Hover/Active -->
+                         <div class="absolute top-0 right-0 p-32 bg-cyan-900/10 rounded-full filter blur-[60px] opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"></div>
                     </div>
                 </div>
             </div>
@@ -418,11 +525,35 @@
                     </div>
                 </div>
 
+                <!-- Card 4 (NEW) -->
+                <div class="w-[85vw] md:w-[600px] h-[450px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-yellow-500 transition duration-500 group relative overflow-hidden shrink-0">
+                    <div class="absolute top-0 right-0 p-32 bg-yellow-600 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-40 transition"></div>
+                    <div>
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="text-5xl font-hero text-gray-700 group-hover:text-white transition">04</span>
+                            <i class="ri-arrow-right-up-line text-2xl text-gray-500 group-hover:text-cyan-400 transition"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-2">GenAI Insight Workflows</h3>
+                        <p class="text-gray-400 text-sm font-mono">Process Automation & Testing</p>
+                    </div>
+                    <div class="relative z-10">
+                        <ul class="text-gray-300 text-sm mb-6 space-y-2 list-disc pl-4">
+                            <li>Built GenAI workflows for summarization, pattern extraction, and classification tasks.</li>
+                            <li>Applied ML-based techniques on structured datasets for operational classification.</li>
+                            <li>Applied structured testing logic to operational datasets.</li>
+                        </ul>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">GenAI Studio</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Python</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
         <!-- SECTION 7: EDUCATION & CERTS (Archives) -->
-        <section class="py-24 bg-black border-t border-gray-900" id="archives">
+        <section class="py-24 bg-[#0f0f13]/90 border-t border-gray-900 relative backdrop-blur-sm" id="archives">
             <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
                 
                 <!-- Education -->
@@ -475,7 +606,7 @@
         </section>
 
         <!-- SECTION 8: FOOTER -->
-        <footer class="bg-black py-24 border-t border-gray-900 relative">
+        <footer class="bg-black/95 py-24 border-t border-gray-900 relative">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-5xl md:text-9xl font-hero font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-900 mb-8 opacity-50 hover:opacity-100 transition duration-500 cursor-pointer">
                     LET'S TALK
@@ -507,6 +638,9 @@
             tl.to(".loader", { yPercent: -100, duration: 1.2, ease: "power4.inOut", delay: 0.5 })
               .to(".hero-anim", { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out" }, "-=0.5")
               .to("#hero-char", { opacity: 1, x: 0, duration: 1.5, ease: "power2.out" }, "-=1");
+              
+             // Set initial playback speed
+             document.querySelectorAll('video').forEach(vid => vid.playbackRate = 0.8);
         });
 
         // Parallax
@@ -518,6 +652,40 @@
             scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true },
             yPercent: 10
         });
+
+        // Video Transitions Logic
+        const videos = document.querySelectorAll('.video-layer');
+        
+        ScrollTrigger.create({
+            trigger: "#about",
+            start: "top center",
+            onEnter: () => switchVideo(0) // Stick with first video
+        });
+
+        ScrollTrigger.create({
+            trigger: "#immersive",
+            start: "top center", 
+            onEnter: () => switchVideo(1), // Switch to travel video
+            onLeaveBack: () => switchVideo(0)
+        });
+        
+         ScrollTrigger.create({
+            trigger: "#experience",
+            start: "top center", 
+            onEnter: () => switchVideo(2), // Switch to image gen video
+            onLeaveBack: () => switchVideo(1)
+        });
+
+        function switchVideo(index) {
+            videos.forEach((vid, i) => {
+                if (i === index) {
+                    vid.classList.add('active');
+                    vid.play(); // Ensure it plays
+                } else {
+                    vid.classList.remove('active');
+                }
+            });
+        }
 
         // Animations for Sections
         const fadeUpSections = ["#about", "#skills", "#experience", "#archives"];
@@ -534,10 +702,10 @@
             y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out"
         });
 
-        // Stagger Experience
-        gsap.from(".experience-item", {
+        // Stagger Experience Cards (Entrance)
+        gsap.from(".mission-card", {
             scrollTrigger: { trigger: "#experience", start: "top 70%" },
-            x: -30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out"
+            x: -50, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out"
         });
 
         // Horizontal Scroll
@@ -552,6 +720,54 @@
                 end: "+=3000", 
             }
         });
+
+        // Mission Card Interactions (Accordion)
+        function toggleMission(card) {
+            const content = card.querySelector(".content-wrapper");
+            const icon = card.querySelector(".toggle-icon");
+            const allCards = document.querySelectorAll(".mission-card");
+            
+            const isActive = card.classList.contains("active");
+
+            // Close all other cards first
+            allCards.forEach(c => {
+                if(c !== card && c.classList.contains("active")) {
+                    gsap.to(c.querySelector(".content-wrapper"), {
+                        height: 0,
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                    c.classList.remove("active");
+                }
+            });
+
+            if (isActive) {
+                // Close clicked card
+                gsap.to(content, {
+                    height: 0,
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: "power2.out"
+                });
+                card.classList.remove("active");
+            } else {
+                // Open clicked card
+                card.classList.add("active");
+                
+                // Correct GSAP Expansion Logic
+                gsap.fromTo(content, 
+                    { height: 0, opacity: 0 },
+                    { height: "auto", opacity: 1, duration: 0.6, ease: "power2.out" }
+                );
+                
+                // Stagger List Items
+                gsap.fromTo(content.querySelectorAll("li"), 
+                    { x: -20, opacity: 0 },
+                    { x: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.2 }
+                );
+            }
+        }
     </script>
 </body>
 </html>
