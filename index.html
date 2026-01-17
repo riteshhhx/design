@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ritesh Yadav | Data Analyst Portfolio</title>
+    <title>Ritesh Yadav | Data Analyst</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,16 +13,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Icons (RemixIcon + FontAwesome for Brands) -->
+    <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary: #5236d2; /* Purple from video */
-            --accent: #00f0ff;  /* Cyberpunk Cyan */
-            --dark: #0f0f13;
-            --card-bg: rgba(19, 19, 24, 0.7);
+            --primary: #5236d2;
+            --accent: #00f0ff;
+            --dark: #050505;
+            --card-bg: rgba(20, 20, 25, 0.6);
         }
 
         body {
@@ -30,7 +30,7 @@
             color: white;
             font-family: 'Space Grotesk', sans-serif;
             overflow-x: hidden;
-            cursor: default;
+            cursor: none; /* Hide default cursor for custom one */
         }
 
         h1, h2, h3, .font-hero {
@@ -39,754 +39,404 @@
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
 
-        /* Utilities */
-        .text-outline {
-            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
-            color: transparent;
+        /* Custom Cursor */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
         }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--accent); }
+        .cursor-outline { width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.5); transition: width 0.2s, height 0.2s; }
         
-        .hero-character {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            height: 85vh;
-            max-width: 45vw;
-            object-fit: contain;
-            object-position: bottom right;
+        /* Video Backgrounds */
+        .video-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .video-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.8), rgba(5,5,5,0.95));
             z-index: 1;
-            mask-image: linear-gradient(to left, black 60%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to left, black 60%, transparent 100%);
-            opacity: 0;
-            filter: drop-shadow(0 0 20px rgba(82, 54, 210, 0.3));
         }
+        .video-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0; transition: opacity 1.5s ease;
+        }
+        .video-layer.active { opacity: 0.6; }
 
-        /* Skill Card Hover Effect */
-        .skill-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .skill-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
-        }
-        .skill-card:hover i {
-            color: var(--accent);
-            text-shadow: 0 0 15px var(--accent);
-            transform: scale(1.1);
-        }
-
-        /* Mission Card (Experience) */
-        .mission-card {
-            background: rgba(26, 26, 31, 0.6);
+        /* Holographic Card Styles */
+        .holo-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
-            border-left: 4px solid #333;
             transition: all 0.4s ease;
         }
-        .mission-card.active {
-            background: rgba(26, 26, 31, 0.9);
-            border-left-color: var(--accent);
-            box-shadow: -5px 0 20px rgba(0, 240, 255, 0.1);
+        .holo-card:hover {
+            border-color: var(--accent);
+            background: rgba(0, 240, 255, 0.05);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
         }
-        .mission-card .content-wrapper {
-            height: 0;
-            overflow: hidden;
-            opacity: 0;
-            transition: none; /* Handled by GSAP */
-        }
-        .mission-card .toggle-icon {
-            transition: transform 0.3s ease;
-        }
-        .mission-card.active .toggle-icon {
-            transform: rotate(180deg);
-            color: var(--accent);
+
+        /* Glitch Text */
+        .glitch-wrapper { position: relative; display: inline-block; }
+        
+        /* Trophy Glow */
+        .trophy-glow {
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
         }
 
         /* Loader */
         .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-
-        /* Video Background Container */
-        .video-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-        /* Dark overlay to make text pop */
-        .video-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6); 
-            z-index: 1;
-        }
-        .video-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
-        .video-layer.active {
-            opacity: 1;
-        }
-
-        /* Core Animation for Section 4 */
-        .core-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-        }
-        .core-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
-        }
-        .core-ring-1 { 
-            width: 200px; height: 200px; 
-            border-top-color: var(--accent); 
-            border-right-color: rgba(0, 240, 255, 0.3);
-            animation: spin 8s linear infinite; 
-        }
-        .core-ring-2 { 
-            width: 280px; height: 280px; 
-            border-bottom-color: var(--primary); 
-            border-left-color: rgba(82, 54, 210, 0.3);
-            animation: spin 12s linear infinite reverse; 
-        }
-        .core-center-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 40px 20px rgba(0, 240, 255, 0.2);
-            animation: pulse-core 2s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        @keyframes pulse-core {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
-        }
-        
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-        }
-        
-        /* Trophy Case Style */
-        .trophy-case {
-            background: linear-gradient(145deg, rgba(255,215,0,0.05), rgba(0,0,0,0));
-            border: 1px solid rgba(255,215,0,0.2);
-        }
-        
-        /* File Access Card Style */
-        .file-access-card {
-            background: rgba(10, 10, 15, 0.8);
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .file-access-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 2px; height: 100%;
-            background: var(--accent);
-            opacity: 0.5;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
         }
     </style>
 </head>
-<body class="antialiased selection:bg-cyan-500 selection:text-black">
+<body class="antialiased">
 
-    <!-- Loading Screen -->
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Loader -->
     <div class="loader">
-        <div class="flex flex-col items-center gap-4">
-             <div class="w-16 h-16 border-4 border-t-cyan-500 border-r-transparent border-b-purple-500 border-l-transparent rounded-full animate-spin"></div>
-             <div class="text-xl font-hero tracking-[0.5em] animate-pulse">INITIALIZING</div>
+        <div class="text-4xl font-hero tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500 animate-pulse">
+            SYSTEM LOADING
         </div>
     </div>
 
-    <!-- Global Video Backgrounds -->
+    <!-- Background Videos -->
     <div class="video-container">
         <div class="video-overlay"></div>
-        <!-- Hero Background -->
-        <video class="video-layer active" id="bg-video-1" autoplay muted loop playsinline>
-            <source src="Video_Generation_Request_Fulfilled.mp4" type="video/mp4">
-        </video>
-        <!-- Transition/Travel Background -->
-        <video class="video-layer" id="bg-video-2" autoplay muted loop playsinline>
-            <source src="Video_Generation_From_Junction.mp4" type="video/mp4">
-        </video>
-         <!-- Image Gen Background -->
-        <video class="video-layer" id="bg-video-3" autoplay muted loop playsinline>
-             <source src="Video_Generation_From_Image.mp4" type="video/mp4">
-        </video>
+        <video class="video-layer active" id="vid-hero" autoplay muted loop playsinline><source src="Video_Generation_Request_Fulfilled.mp4" type="video/mp4"></video>
+        <video class="video-layer" id="vid-travel" autoplay muted loop playsinline><source src="Video_Generation_From_Junction.mp4" type="video/mp4"></video>
+        <video class="video-layer" id="vid-cloud" autoplay muted loop playsinline><source src="Video_Generation_From_Image.mp4" type="video/mp4"></video>
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center text-white backdrop-blur-md bg-black/20 border-b border-white/5">
-        <div class="font-hero font-bold text-2xl tracking-tighter hover:text-cyan-400 transition cursor-pointer">RY.</div>
-        <div class="hidden md:flex gap-12 text-xs font-bold tracking-[0.2em] uppercase">
-            <a href="#about" class="hover:text-cyan-400 transition relative group">Profile<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></a>
-            <a href="#skills" class="hover:text-cyan-400 transition relative group">Arsenal<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></a>
-            <a href="#experience" class="hover:text-cyan-400 transition relative group">Missions<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></a>
-            <a href="#work" class="hover:text-cyan-400 transition relative group">Work<span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span></a>
+    <nav class="fixed top-0 w-full z-50 px-10 py-8 flex justify-between items-center mix-blend-difference text-white">
+        <div class="font-hero font-bold text-2xl tracking-tighter hover:text-cyan-400 transition cursor-none">RY.</div>
+        <div class="hidden md:flex gap-16 text-[10px] font-bold tracking-[0.25em] uppercase">
+            <a href="#profile" class="hover:text-cyan-400 transition">Identity</a>
+            <a href="#work" class="hover:text-cyan-400 transition">Operations</a>
+            <a href="#credentials" class="hover:text-cyan-400 transition">Database</a>
         </div>
-        <a href="mailto:arritesh123@gmail.com" class="border border-white/30 px-8 py-3 rounded-none text-xs font-bold uppercase hover:bg-white hover:text-black transition duration-300 tracking-widest clip-path-polygon">
-            Contact Protocol
+        <a href="mailto:arritesh123@gmail.com" class="border border-white/20 px-8 py-3 text-[10px] font-bold uppercase hover:bg-white hover:text-black transition tracking-widest bg-black/50 backdrop-blur-md">
+            Initialize Contact
         </a>
     </nav>
 
-    <!-- MAIN CONTAINER -->
-    <div id="main">
+    <div id="smooth-wrapper">
+        <div id="smooth-content">
 
-        <!-- SECTION 1: HERO (Junction 1) -->
-        <section class="relative h-screen w-full overflow-hidden flex items-center" id="hero">
-            <!-- Character Portrait -->
-            <img src="portrait.jpg" class="hero-character hidden md:block" id="hero-char" alt="Ritesh Avatar">
-            
-            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-0"></div>
+            <!-- SECTION 1: HERO -->
+            <section class="h-screen flex flex-col justify-center px-6 md:px-24 relative overflow-hidden" id="hero">
+                <div class="absolute right-0 bottom-0 h-[90vh] w-[50vw] opacity-80 mix-blend-lighten pointer-events-none">
+                    <img src="portrait.jpg" class="w-full h-full object-contain object-bottom mask-image-gradient" alt="Ritesh">
+                    <div class="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-[#050505]"></div>
+                </div>
 
-            <div class="relative z-10 w-full px-6 md:pl-24 max-w-5xl">
-                <div class="flex items-center gap-4 mb-6 opacity-0 hero-anim">
-                    <span class="h-[1px] w-12 bg-cyan-500"></span>
-                    <p class="text-cyan-400 font-bold tracking-[0.4em] text-xs">DATA ANALYST & STRATEGIST</p>
+                <div class="relative z-10 max-w-4xl">
+                    <div class="flex items-center gap-4 mb-8 overflow-hidden">
+                        <div class="h-[2px] w-16 bg-cyan-500 hero-elem"></div>
+                        <p class="text-cyan-400 font-bold tracking-[0.5em] text-xs hero-elem">DATA STRATEGIST</p>
+                    </div>
+                    
+                    <h1 class="text-7xl md:text-[9rem] font-bold leading-[0.9] mb-12 mix-blend-overlay opacity-90">
+                        <div class="hero-elem">DATA</div>
+                        <div class="hero-elem text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">DRIVEN</div>
+                        <div class="hero-elem text-outline">FUTURE</div>
+                    </h1>
+                    
+                    <div class="hero-elem">
+                        <p class="text-gray-400 text-lg max-w-md border-l-2 border-purple-500 pl-6 py-2">
+                            Transforming raw chaos into actionable business strategy through Python, SQL, and Advanced Analytics.
+                        </p>
+                    </div>
                 </div>
                 
-                <h1 class="text-6xl md:text-9xl font-bold leading-none opacity-0 hero-anim mb-8">
-                    ANALYZE<span class="text-cyan-500">.</span><br>
-                    PREDICT<span class="text-purple-500">.</span><br>
-                    OPTIMIZE<span class="text-white">.</span>
-                </h1>
-                
-                <p class="max-w-xl text-gray-300 text-lg leading-relaxed opacity-0 hero-anim font-light border-l-2 border-white/20 pl-6">
-                    Extracting actionable insights, automating dashboards, and empowering business decisions through data precision.
-                </p>
-                
-                <div class="mt-12 opacity-0 hero-anim">
-                    <a href="#work" class="inline-flex items-center gap-3 text-sm font-bold tracking-widest uppercase hover:gap-6 transition-all duration-300">
-                        Explore System <i class="ri-arrow-right-line"></i>
-                    </a>
+                <div class="absolute bottom-12 left-24 flex items-center gap-4 text-xs font-mono text-gray-500">
+                    <span class="animate-pulse">SCROLL TO DECRYPT</span>
+                    <div class="h-16 w-[1px] bg-gray-800 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1/2 bg-cyan-500 animate-movedown"></div>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- SECTION 2: INTRO (Profile) -->
-        <section class="min-h-screen w-full bg-[#0f0f13]/90 relative py-32 flex flex-col justify-center backdrop-blur-sm" id="about">
-            <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-20">
-                
-                <!-- Left: Holographic ID Card style -->
-                <div class="w-full md:w-5/12 relative group perspective-1000">
-                    <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-[#1a1a1f] p-2 transform transition duration-700 hover:rotate-y-12">
-                         <div class="absolute top-4 right-4 z-20">
-                             <i class="ri-fingerprint-line text-4xl text-white/20"></i>
-                         </div>
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" 
-                             class="w-full h-[500px] object-cover rounded-xl filter grayscale group-hover:grayscale-0 transition duration-700" alt="Data Analytics">
+            <!-- SECTION 2: STICKY PROFILE (Scrollytelling) -->
+            <section class="min-h-[150vh] relative" id="profile">
+                <div class="sticky top-0 h-screen flex overflow-hidden">
+                    <!-- Left: Visual -->
+                    <div class="w-full md:w-1/2 h-full relative hidden md:block">
+                        <div class="absolute inset-0 bg-black/20 z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070" 
+                             class="w-full h-full object-cover grayscale opacity-60" alt="Tech">
                         
-                        <!-- ID Overlay -->
-                        <div class="absolute bottom-6 left-6 z-20">
-                            <div class="text-[10px] tracking-widest text-cyan-400 uppercase mb-1">Identity Verified</div>
-                            <div class="text-2xl font-bold font-hero">Ritesh Yadav</div>
+                        <!-- Holographic Overlay Data -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 border border-white/10 bg-black/40 backdrop-blur-md p-8 rounded-xl border-l-4 border-l-cyan-500">
+                            <div class="flex justify-between items-end mb-4">
+                                <h3 class="text-4xl font-hero text-white">RITESH YADAV</h3>
+                                <span class="text-cyan-400 font-mono text-xs">ID: 8756-3459</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 text-xs font-mono text-gray-400">
+                                <div>> ROLE: ANALYST</div>
+                                <div>> LOC: DELHI, IN</div>
+                                <div>> STATUS: ONLINE</div>
+                                <div>> CLR: ALPHA</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Scrolling Text -->
+                    <div class="w-full md:w-1/2 h-full flex items-center justify-center p-12 md:p-24 bg-black/80 backdrop-blur-sm">
+                        <div class="space-y-24">
+                            <div class="scroll-reveal opacity-20 transition-opacity duration-500">
+                                <span class="text-purple-500 font-mono text-xs mb-2 block">01 // THE ORIGIN</span>
+                                <h2 class="text-4xl font-bold mb-4">Financial Precision</h2>
+                                <p class="text-gray-400 leading-relaxed">
+                                    Starting in <span class="text-white">Commerce & Finance</span>, I mastered the art of the ledger. 
+                                    At <span class="text-white">Reias India</span>, I didn't just track costs; I optimized them, slashing inefficiencies by 10%.
+                                </p>
+                            </div>
+                            
+                            <div class="scroll-reveal opacity-20 transition-opacity duration-500">
+                                <span class="text-cyan-500 font-mono text-xs mb-2 block">02 // THE EVOLUTION</span>
+                                <h2 class="text-4xl font-bold mb-4">Data Integration</h2>
+                                <p class="text-gray-400 leading-relaxed">
+                                    Transitioning to <span class="text-white">Business Intelligence</span>, I merged financial acumen with 
+                                    <span class="text-white">Python & SQL</span>. I build dashboards that don't just look good—they predict the future.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="w-full md:w-1/2 space-y-10">
-                    <div>
-                        <div class="text-xs font-bold text-purple-500 tracking-[0.3em] uppercase mb-4">001 // The Profile</div>
-                        <h2 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
-                            DECODING THE<br>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">SIGNAL IN NOISE.</span>
+            <!-- SECTION 3: IMMERSIVE SKILLS (Orbit) -->
+            <section class="min-h-screen flex items-center justify-center relative py-32" id="skills">
+                <div class="container mx-auto px-6 text-center">
+                    <div class="mb-20">
+                        <h2 class="text-6xl md:text-8xl font-hero font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-black/20 opacity-80">
+                            ARSENAL
                         </h2>
-                        <p class="text-gray-400 text-lg leading-relaxed font-light">
-                            In a world flooded with raw data, I serve as the architect of clarity. With expertise in 
-                            <strong class="text-white">SQL, Python, and Financial Modeling</strong>, I don't just report numbers; 
-                            I forecast futures. From auditing operational expenses to building automated BI ecosystems, 
-                            my work turns complexity into strategy.
-                        </p>
                     </div>
-                    
-                    <!-- System Status Panel -->
-                    <div class="bg-black/40 border border-white/10 p-6 rounded-xl flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="relative h-12 w-12 flex items-center justify-center bg-cyan-900/20 rounded-full border border-cyan-500/30">
-                                <i class="ri-radar-line text-cyan-400 text-xl animate-pulse"></i>
-                            </div>
-                            <div>
-                                <div class="text-[10px] text-gray-500 tracking-widest uppercase">Current Status</div>
-                                <div class="text-sm font-bold text-white font-mono">OPERATIONAL // READY</div>
-                            </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                        <!-- Skill Item -->
+                        <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fab fa-python text-5xl text-gray-600 group-hover:text-cyan-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">PYTHON</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">Pandas / NumPy / EDA</p>
                         </div>
-                        <div class="h-10 w-[1px] bg-white/10"></div>
-                        <div class="flex items-center gap-4">
-                             <div class="relative h-12 w-12 flex items-center justify-center bg-purple-900/20 rounded-full border border-purple-500/30">
-                                <i class="ri-shield-check-line text-purple-400 text-xl"></i>
-                            </div>
-                            <div>
-                                <div class="text-[10px] text-gray-500 tracking-widest uppercase">Clearance</div>
-                                <div class="text-sm font-bold text-white font-mono">LEVEL ALPHA</div>
-                            </div>
+                        <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fas fa-database text-5xl text-gray-600 group-hover:text-purple-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">SQL</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">Query / Extract / Clean</p>
+                        </div>
+                        <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fas fa-chart-pie text-5xl text-gray-600 group-hover:text-yellow-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">POWER BI</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">DAX / Visualization</p>
+                        </div>
+                        <div class="holo-card p-10 rounded-none transform transition hover:-translate-y-2 group">
+                            <i class="fas fa-brain text-5xl text-gray-600 group-hover:text-pink-400 transition mb-6 block"></i>
+                            <h3 class="text-lg font-bold tracking-widest">GEN AI</h3>
+                            <p class="text-xs text-gray-500 mt-2 font-mono opacity-0 group-hover:opacity-100 transition">LLMs / Automation</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- SECTION 3: SKILLS (Capabilities) -->
-        <section class="py-32 bg-[#0f0f13]/95 relative backdrop-blur-md" id="skills">
-            <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-20 border-b border-gray-800 pb-8">
+            <!-- SECTION 4: PROJECTS (Velocity Skew Scroll) -->
+            <section class="py-40 bg-black/90 relative" id="work">
+                <div class="container mx-auto px-6 mb-20 flex items-end justify-between">
                     <div>
-                        <div class="text-xs font-bold text-cyan-400 tracking-[0.3em] uppercase mb-3">002 // The Arsenal</div>
-                        <h2 class="text-5xl md:text-7xl font-bold text-white">CAPABILITIES</h2>
+                        <span class="text-xs font-mono text-cyan-500">003 // DEPLOYED UNITS</span>
+                        <h2 class="text-5xl font-bold mt-4">PROJECTS</h2>
                     </div>
-                    <div class="text-right hidden md:block">
-                        <p class="text-gray-500 text-sm font-mono">Tools & Technologies<br>Loaded and Optimized</p>
+                    <div class="hidden md:block text-right">
+                        <p class="text-gray-500 text-xs font-mono">SCROLL VELOCITY<br>ACTIVATED</p>
                     </div>
                 </div>
 
-                <!-- Skill Grid -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <!-- Tech Stack -->
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                            <i class="fab fa-python text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">PYTHON</h3>
-                        <p class="text-xs text-gray-500 font-mono">Pandas • NumPy • EDA</p>
-                    </div>
-                    
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                            <i class="fas fa-database text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">SQL</h3>
-                        <p class="text-xs text-gray-500 font-mono">Extraction • Validation</p>
-                    </div>
-                    
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                             <i class="fas fa-microchip text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">GEN AI</h3>
-                        <p class="text-xs text-gray-500 font-mono">LLMs • Prompt Eng.</p>
-                    </div>
-                    
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                            <i class="fas fa-chart-line text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">FINANCE</h3>
-                        <p class="text-xs text-gray-500 font-mono">Modeling • Risk Mgmt</p>
-                    </div>
-
-                    <!-- Tools -->
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                            <i class="fas fa-chart-bar text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">POWER BI</h3>
-                        <p class="text-xs text-gray-500 font-mono">DAX • Dashboarding</p>
-                    </div>
-                    
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                            <i class="fas fa-file-excel text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">EXCEL</h3>
-                        <p class="text-xs text-gray-500 font-mono">VBA • Advanced</p>
-                    </div>
-                    
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                            <i class="fas fa-search text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">LOOKER</h3>
-                        <p class="text-xs text-gray-500 font-mono">G-Cloud BI</p>
-                    </div>
-                    
-                    <div class="skill-card p-8 rounded-2xl flex flex-col items-center text-center group">
-                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-cyan-500/10 transition-colors">
-                            <i class="fas fa-chess-knight text-3xl text-gray-400 group-hover:text-cyan-400 transition-colors"></i>
-                        </div>
-                        <h3 class="text-lg font-bold mb-2 tracking-wide">STRATEGY</h3>
-                        <p class="text-xs text-gray-500 font-mono">QA • Communication</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: IMMERSIVE VIDEO TRANSITION (HOLOGRAPHIC CORE) -->
-        <section class="h-screen w-full relative overflow-hidden flex items-center justify-center bg-transparent" id="immersive">
-            <!-- Background handled by global video container -->
-            <div class="z-10 flex flex-col items-center justify-center relative">
-                
-                <!-- Holographic Core Animation -->
-                <div class="core-container mb-12">
-                    <div class="core-ring core-ring-1"></div>
-                    <div class="core-ring core-ring-2"></div>
-                    <div class="core-center-glow"></div>
-                </div>
-                
-                <h2 class="text-4xl md:text-6xl font-bold leading-tight uppercase text-center mb-6 mix-blend-overlay tracking-tight">
-                    Transforming<br>
-                    <span id="scramble-text" class="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" data-text="CHAOS">CHAOS</span>
-                </h2>
-                
-                <div class="flex gap-2">
-                    <span class="px-3 py-1 bg-black/50 border border-purple-500/50 rounded text-[10px] font-bold tracking-widest uppercase text-purple-300 backdrop-blur-md">Analyzing</span>
-                    <span class="px-3 py-1 bg-black/50 border border-cyan-500/50 rounded text-[10px] font-bold tracking-widest uppercase text-cyan-300 backdrop-blur-md">Processing</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 5: EXPERIENCE (Mission Log) -->
-        <section class="py-32 bg-[#0f0f13]/95 relative backdrop-blur-md" id="experience">
-            <div class="container mx-auto px-6 max-w-5xl">
-                <div class="mb-24 text-center">
-                    <div class="text-xs font-bold text-purple-500 tracking-[0.3em] uppercase mb-4">003 // Mission Log</div>
-                    <h2 class="text-5xl md:text-7xl font-bold text-white">PROFESSIONAL<br>EXPERIENCE</h2>
-                </div>
-
-                <div class="space-y-12">
-                    <!-- Mission Card 1 -->
-                    <div class="mission-card cursor-pointer p-10 rounded-2xl relative overflow-hidden group" onclick="toggleMission(this)">
-                        <div class="flex flex-col md:flex-row justify-between md:items-center relative z-10 gap-4">
-                            <div>
-                                <h3 class="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors">Financial Analyst</h3>
-                                <div class="flex items-center gap-3 mt-2">
-                                    <span class="text-sm text-gray-400 font-mono uppercase tracking-wider">Reias India Real Estate Pvt. Ltd</span>
-                                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                                    <span class="text-sm text-cyan-500 font-mono">Sept 2023 – March 2024</span>
-                                </div>
+                <div class="flex overflow-x-auto pb-20 px-6 gap-12 no-scrollbar" id="project-track">
+                    <!-- Project 1 -->
+                    <div class="project-card min-w-[85vw] md:min-w-[600px] h-[70vh] bg-[#0a0a0a] border border-white/10 relative group overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-700 scale-100 group-hover:scale-110" alt="Finance">
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-10 z-20">
+                            <div class="text-6xl font-hero text-white/10 absolute -top-10 left-10">01</div>
+                            <h3 class="text-3xl font-bold mb-2 relative">Thermo-Lock Pro</h3>
+                            <p class="text-cyan-400 text-xs font-mono mb-6">COST ACCOUNTING & VALUE ENGINEERING</p>
+                            <p class="text-gray-300 max-w-md text-sm leading-relaxed mb-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-500">
+                                Detailed cost breakdown of materials & labor. Identified gaps vs target cost using value engineering.
+                            </p>
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">Excel</span>
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">Finance</span>
                             </div>
-                            <div class="h-10 w-10 rounded-full border border-gray-600 flex items-center justify-center group-hover:border-cyan-400 transition-colors">
-                                <i class="fas fa-chevron-down text-gray-400 text-sm toggle-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="project-card min-w-[85vw] md:min-w-[600px] h-[70vh] bg-[#0a0a0a] border border-white/10 relative group overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-700 scale-100 group-hover:scale-110" alt="AI">
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-10 z-20">
+                            <div class="text-6xl font-hero text-white/10 absolute -top-10 left-10">02</div>
+                            <h3 class="text-3xl font-bold mb-2 relative">GenAI Analytics</h3>
+                            <p class="text-purple-400 text-xs font-mono mb-6">PREDICTIVE MODELING & RISK PROFILING</p>
+                            <p class="text-gray-300 max-w-md text-sm leading-relaxed mb-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-500">
+                                Conducted EDA and risk profiling on large datasets. Interpreted ML outputs for delinquency prediction.
+                            </p>
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">Python</span>
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">ML</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="project-card min-w-[85vw] md:min-w-[600px] h-[70vh] bg-[#0a0a0a] border border-white/10 relative group overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-700 scale-100 group-hover:scale-110" alt="Dashboards">
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-10 z-20">
+                            <div class="text-6xl font-hero text-white/10 absolute -top-10 left-10">03</div>
+                            <h3 class="text-3xl font-bold mb-2 relative">Financial Dashboards</h3>
+                            <p class="text-yellow-400 text-xs font-mono mb-6">AUTOMATED REPORTING ECOSYSTEM</p>
+                            <p class="text-gray-300 max-w-md text-sm leading-relaxed mb-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-500">
+                                Built multi-year revenue–expense–profit dashboards. Simulated "Early Warning Signals" for KPIs.
+                            </p>
+                            <div class="flex gap-2">
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">Power BI</span>
+                                <span class="px-3 py-1 bg-white/10 text-[10px] font-bold uppercase">Viz</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: ACHIEVEMENTS (Hall of Fame) -->
+            <section class="min-h-[60vh] flex items-center justify-center bg-gradient-to-b from-[#0f0f13] to-black py-20" id="achievements">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-200 animate-pulse">
+                            HALL OF FAME
+                        </h2>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row justify-center gap-12">
+                        <!-- Trophy 1 -->
+                        <div class="flex flex-col items-center text-center group cursor-default">
+                            <div class="w-32 h-32 rounded-full border-2 border-yellow-500/30 flex items-center justify-center bg-yellow-900/10 mb-6 trophy-glow group-hover:scale-110 transition duration-500">
+                                <i class="fas fa-trophy text-5xl text-yellow-500"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Gold Medalist</h3>
+                            <p class="text-gray-400 text-sm font-mono uppercase tracking-wide">All India Football Championship</p>
+                            <p class="text-xs text-gray-600 mt-2">2019</p>
                         </div>
                         
-                        <div class="content-wrapper relative z-10">
-                            <div class="pt-8 mt-4 border-t border-gray-700/50">
-                                <ul class="space-y-4 text-gray-300 font-light">
-                                    <li class="flex items-start gap-4">
-                                        <i class="ri-checkbox-circle-fill text-purple-500 mt-1 shrink-0"></i>
-                                        <span>Extracted and analyzed financial and operational data to support strategic business decisions and budgeting cycles.</span>
-                                    </li>
-                                    <li class="flex items-start gap-4">
-                                        <i class="ri-checkbox-circle-fill text-purple-500 mt-1 shrink-0"></i>
-                                        <span>Built automated revenue/cost dashboards in Excel & Power BI, reducing reporting turnaround time by 15%.</span>
-                                    </li>
-                                    <li class="flex items-start gap-4">
-                                        <i class="ri-checkbox-circle-fill text-purple-500 mt-1 shrink-0"></i>
-                                        <span>Conducted deep-dive audits of operational expenses, leading to a 10% reduction in unnecessary costs.</span>
-                                    </li>
-                                    <li class="flex items-start gap-4">
-                                        <i class="ri-checkbox-circle-fill text-purple-500 mt-1 shrink-0"></i>
-                                        <span>Redesigned data validation processes to improve reporting accuracy and highlighted key control gaps.</span>
-                                    </li>
-                                </ul>
+                        <!-- Trophy 2 -->
+                        <div class="flex flex-col items-center text-center group cursor-default">
+                            <div class="w-32 h-32 rounded-full border-2 border-gray-400/30 flex items-center justify-center bg-gray-900/10 mb-6 trophy-glow group-hover:scale-110 transition duration-500">
+                                <i class="fas fa-medal text-5xl text-gray-400"></i>
                             </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">1st Runner-Up</h3>
+                            <p class="text-gray-400 text-sm font-mono uppercase tracking-wide">State Olympic Games</p>
+                            <p class="text-xs text-gray-600 mt-2">2019</p>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <!-- Mission Card 2 -->
-                    <div class="mission-card cursor-pointer p-10 rounded-2xl relative overflow-hidden group" onclick="toggleMission(this)">
-                        <div class="flex flex-col md:flex-row justify-between md:items-center relative z-10 gap-4">
-                            <div>
-                                <h3 class="text-3xl font-bold text-white group-hover:text-cyan-400 transition-colors">Sales & Marketing Analyst (Intern)</h3>
-                                <div class="flex items-center gap-3 mt-2">
-                                    <span class="text-sm text-gray-400 font-mono uppercase tracking-wider">The Times of India</span>
-                                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                                    <span class="text-sm text-cyan-500 font-mono">Jun 2024 – Jul 2024</span>
-                                </div>
-                            </div>
-                            <div class="h-10 w-10 rounded-full border border-gray-600 flex items-center justify-center group-hover:border-cyan-400 transition-colors">
-                                <i class="fas fa-chevron-down text-gray-400 text-sm toggle-icon"></i>
-                            </div>
-                        </div>
+            <!-- SECTION 6: CREDENTIALS (Data Grid) -->
+            <section class="min-h-screen py-32 bg-black relative" id="credentials">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+                <div class="container mx-auto px-6 relative z-10">
+                    <div class="flex flex-col md:flex-row gap-16">
                         
-                        <div class="content-wrapper relative z-10">
-                            <div class="pt-8 mt-4 border-t border-gray-700/50">
-                                <ul class="space-y-4 text-gray-300 font-light">
-                                    <li class="flex items-start gap-4">
-                                        <i class="ri-checkbox-circle-fill text-cyan-500 mt-1 shrink-0"></i>
-                                        <span>Executed market segmentation analysis using consumer data to support targeted campaign strategies.</span>
-                                    </li>
-                                    <li class="flex items-start gap-4">
-                                        <i class="ri-checkbox-circle-fill text-cyan-500 mt-1 shrink-0"></i>
-                                        <span>Monitored campaign KPIs and created weekly insight decks for cross-functional leadership teams.</span>
-                                    </li>
-                                    <li class="flex items-start gap-4">
-                                        <i class="ri-checkbox-circle-fill text-cyan-500 mt-1 shrink-0"></i>
-                                        <span>Delivered competitive analysis reports within tight deadlines to enhance strategic decision-making.</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 6: PROJECTS (Horizontal Scroll) -->
-        <section class="py-32 bg-[#0f0f13] overflow-hidden" id="work">
-            <div class="container mx-auto px-6 mb-16">
-                <div class="text-xs font-bold text-pink-500 tracking-[0.3em] uppercase mb-4">004 // The Works</div>
-                <h2 class="text-5xl md:text-7xl font-bold text-white">PROJECTS</h2>
-            </div>
-
-            <div class="flex flex-nowrap gap-8 pl-6 md:pl-20 pb-20 w-max" id="horizontal-track">
-                
-                <!-- Card 1 -->
-                <div class="w-[85vw] md:w-[500px] h-[500px] bg-[#1a1a1f] rounded-3xl p-10 flex flex-col justify-between border border-white/5 hover:border-purple-500 transition duration-500 group relative overflow-hidden shrink-0">
-                    <div class="absolute top-0 right-0 p-40 bg-purple-600 rounded-full filter blur-[100px] opacity-10 group-hover:opacity-30 transition"></div>
-                    <div>
-                        <div class="flex justify-between items-start mb-8">
-                            <span class="text-6xl font-hero text-gray-800 group-hover:text-white transition duration-500">01</span>
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white transition">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-3xl font-bold mb-3">Thermo-Lock Pro</h3>
-                        <p class="text-gray-400 text-xs font-mono tracking-widest uppercase">Cost Accounting</p>
-                    </div>
-                    <div class="relative z-10">
-                        <p class="text-gray-400 leading-relaxed text-sm mb-6">
-                            Detailed cost breakdown of materials & labor. Identified gaps vs target cost using value engineering and modeled cost-reduction scenarios.
-                        </p>
-                        <div class="flex gap-2">
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-wide text-gray-300">Excel</span>
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-wide text-gray-300">Cost Analysis</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="w-[85vw] md:w-[500px] h-[500px] bg-[#1a1a1f] rounded-3xl p-10 flex flex-col justify-between border border-white/5 hover:border-cyan-500 transition duration-500 group relative overflow-hidden shrink-0">
-                     <div class="absolute top-0 right-0 p-40 bg-cyan-600 rounded-full filter blur-[100px] opacity-10 group-hover:opacity-30 transition"></div>
-                    <div>
-                         <div class="flex justify-between items-start mb-8">
-                            <span class="text-6xl font-hero text-gray-800 group-hover:text-white transition duration-500">02</span>
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-cyan-500 group-hover:text-white transition">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-3xl font-bold mb-3">GenAI Analytics</h3>
-                        <p class="text-gray-400 text-xs font-mono tracking-widest uppercase">Forage Simulation</p>
-                    </div>
-                    <div class="relative z-10">
-                        <p class="text-gray-400 leading-relaxed text-sm mb-6">
-                            Conducted EDA and risk profiling on large datasets. Interpreted ML outputs for delinquency prediction and prepared analytical QA notes.
-                        </p>
-                        <div class="flex gap-2">
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-wide text-gray-300">Python</span>
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-wide text-gray-300">ML</span>
-                        </div>
-                    </div>
-                </div>
-                
-                 <!-- Card 3 -->
-                <div class="w-[85vw] md:w-[500px] h-[500px] bg-[#1a1a1f] rounded-3xl p-10 flex flex-col justify-between border border-white/5 hover:border-pink-500 transition duration-500 group relative overflow-hidden shrink-0">
-                     <div class="absolute top-0 right-0 p-40 bg-pink-600 rounded-full filter blur-[100px] opacity-10 group-hover:opacity-30 transition"></div>
-                    <div>
-                         <div class="flex justify-between items-start mb-8">
-                            <span class="text-6xl font-hero text-gray-800 group-hover:text-white transition duration-500">03</span>
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-pink-500 group-hover:text-white transition">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-3xl font-bold mb-3">Financial Dashboards</h3>
-                        <p class="text-gray-400 text-xs font-mono tracking-widest uppercase">Portfolio Project</p>
-                    </div>
-                    <div class="relative z-10">
-                        <p class="text-gray-400 leading-relaxed text-sm mb-6">
-                             Built multi-year revenue–expense–profit dashboards. Performed trend analysis and simulated "Early Warning Signals" for KPIs.
-                        </p>
-                        <div class="flex gap-2">
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-wide text-gray-300">Power BI</span>
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-wide text-gray-300">Viz</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="w-[85vw] md:w-[500px] h-[500px] bg-[#1a1a1f] rounded-3xl p-10 flex flex-col justify-between border border-white/5 hover:border-yellow-500 transition duration-500 group relative overflow-hidden shrink-0">
-                     <div class="absolute top-0 right-0 p-40 bg-yellow-600 rounded-full filter blur-[100px] opacity-10 group-hover:opacity-30 transition"></div>
-                    <div>
-                         <div class="flex justify-between items-start mb-8">
-                            <span class="text-6xl font-hero text-gray-800 group-hover:text-white transition duration-500">04</span>
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-yellow-500 group-hover:text-white transition">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-3xl font-bold mb-3">GenAI Workflows</h3>
-                        <p class="text-gray-400 text-xs font-mono tracking-widest uppercase">Automation</p>
-                    </div>
-                    <div class="relative z-10">
-                        <p class="text-gray-400 leading-relaxed text-sm mb-6">
-                            Built GenAI workflows for summarization and pattern extraction. Applied structured testing logic to operational datasets.
-                        </p>
-                        <div class="flex gap-2">
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-wide text-gray-300">GenAI Studio</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 7: ACHIEVEMENTS (Trophy Case) -->
-        <section class="py-24 bg-[#0f0f13] border-t border-gray-900" id="achievements">
-            <div class="container mx-auto px-6">
-                <div class="flex items-center gap-4 mb-12">
-                     <i class="ri-trophy-line text-yellow-500 text-2xl"></i>
-                     <h2 class="text-3xl font-bold text-white tracking-wide">ACHIEVEMENTS</h2>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Achievement 1 -->
-                    <div class="trophy-case p-8 rounded-xl flex items-start gap-6 group">
-                        <div class="text-4xl text-yellow-500/80 group-hover:scale-110 transition">🏆</div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white mb-2">Gold Medalist</h3>
-                            <p class="text-gray-400 text-sm">All India Football Championship (2019)</p>
-                            <p class="text-gray-500 text-xs mt-2 italic">Demonstrated discipline, resilience, and high-performance teamwork.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Achievement 2 -->
-                    <div class="trophy-case p-8 rounded-xl flex items-start gap-6 group">
-                         <div class="text-4xl text-gray-400 group-hover:scale-110 transition">🥈</div>
-                        <div>
-                            <h3 class="text-xl font-bold text-white mb-2">1st Runner-Up</h3>
-                            <p class="text-gray-400 text-sm">State Olympic Games (2019)</p>
-                            <p class="text-gray-500 text-xs mt-2 italic">Open Category Competition</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 8: ACADEMICS & LICENSES (Data Files) -->
-        <section class="py-32 bg-[#0a0a0f] relative" id="archives">
-            <div class="container mx-auto px-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
-                    
-                    <!-- Academics Column -->
-                    <div>
-                        <div class="text-xs font-bold text-gray-500 tracking-[0.3em] uppercase mb-10">005 // Academic Records</div>
-                        <div class="space-y-6">
-                            <!-- Degree 1 -->
-                            <div class="file-access-card p-6 rounded-lg flex items-center justify-between group cursor-default hover:bg-white/5 transition">
-                                <div>
-                                    <div class="text-xs text-purple-400 font-mono mb-1">2025 – Present</div>
-                                    <h3 class="text-xl font-bold text-white mb-1">MBA in Business Analytics</h3>
-                                    <p class="text-gray-500 text-sm">Mittal School of Business, LPU</p>
+                        <!-- Academics -->
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold mb-8 text-cyan-500 flex items-center gap-3">
+                                <i class="ri-book-mark-line"></i> ACADEMIC RECORDS
+                            </h3>
+                            <div class="space-y-6">
+                                <div class="holo-card p-6 border-l-4 border-l-purple-500 rounded-r-xl">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-white">MBA in Business Analytics</h4>
+                                            <p class="text-sm text-gray-400 mt-1">Mittal School of Business, LPU</p>
+                                        </div>
+                                        <span class="text-xs font-mono bg-purple-900/50 px-2 py-1 rounded text-purple-300">2025-Present</span>
+                                    </div>
                                 </div>
-                                <i class="ri-book-open-line text-gray-600 text-2xl group-hover:text-purple-400 transition"></i>
-                            </div>
-                            <!-- Degree 2 -->
-                            <div class="file-access-card p-6 rounded-lg flex items-center justify-between group cursor-default hover:bg-white/5 transition">
-                                <div>
-                                    <div class="text-xs text-purple-400 font-mono mb-1">Graduated 2024</div>
-                                    <h3 class="text-xl font-bold text-white mb-1">Bachelor of Commerce</h3>
-                                    <p class="text-gray-500 text-sm">Mittal School of Business, LPU</p>
+                                <div class="holo-card p-6 border-l-4 border-l-gray-500 rounded-r-xl opacity-60 hover:opacity-100 transition">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-white">Bachelor of Commerce</h4>
+                                            <p class="text-sm text-gray-400 mt-1">Mittal School of Business, LPU</p>
+                                        </div>
+                                        <span class="text-xs font-mono bg-gray-800 px-2 py-1 rounded text-gray-400">2024</span>
+                                    </div>
                                 </div>
-                                <i class="ri-graduation-cap-line text-gray-600 text-2xl group-hover:text-purple-400 transition"></i>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Licenses Column -->
-                    <div>
-                        <div class="text-xs font-bold text-gray-500 tracking-[0.3em] uppercase mb-10">006 // Licenses & Certs</div>
-                        <div class="grid grid-cols-1 gap-4">
-                            <div class="flex items-center gap-4 p-4 border border-gray-800 rounded bg-[#131318] hover:border-cyan-500/50 transition duration-300">
-                                <i class="ri-medal-line text-cyan-500"></i>
-                                <span class="text-sm text-gray-300">GenAI Powered Data Analytics (Forage)</span>
-                            </div>
-                            <div class="flex items-center gap-4 p-4 border border-gray-800 rounded bg-[#131318] hover:border-cyan-500/50 transition duration-300">
-                                <i class="ri-medal-line text-cyan-500"></i>
-                                <span class="text-sm text-gray-300">Data Science with Generative AI (PW)</span>
-                            </div>
-                            <div class="flex items-center gap-4 p-4 border border-gray-800 rounded bg-[#131318] hover:border-cyan-500/50 transition duration-300">
-                                <i class="ri-medal-line text-cyan-500"></i>
-                                <span class="text-sm text-gray-300">Intro to Looker (Google Cloud)</span>
-                            </div>
-                             <div class="flex items-center gap-4 p-4 border border-gray-800 rounded bg-[#131318] hover:border-cyan-500/50 transition duration-300">
-                                <i class="ri-medal-line text-cyan-500"></i>
-                                <span class="text-sm text-gray-300">Intro to MS Excel (Coursera)</span>
+                        <!-- Licenses -->
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold mb-8 text-cyan-500 flex items-center gap-3">
+                                <i class="ri-secure-payment-line"></i> LICENSES & CERTS
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="holo-card p-4 flex items-center gap-3 hover:bg-cyan-900/10 cursor-help transition" title="Verified">
+                                    <i class="ri-verified-badge-fill text-cyan-400"></i>
+                                    <span class="text-sm font-mono text-gray-300">GenAI Analytics (Forage)</span>
+                                </div>
+                                <div class="holo-card p-4 flex items-center gap-3 hover:bg-cyan-900/10 cursor-help transition" title="Verified">
+                                    <i class="ri-verified-badge-fill text-cyan-400"></i>
+                                    <span class="text-sm font-mono text-gray-300">Data Science & AI (PW)</span>
+                                </div>
+                                <div class="holo-card p-4 flex items-center gap-3 hover:bg-cyan-900/10 cursor-help transition" title="Verified">
+                                    <i class="ri-verified-badge-fill text-cyan-400"></i>
+                                    <span class="text-sm font-mono text-gray-300">Intro to Looker (Google)</span>
+                                </div>
+                                <div class="holo-card p-4 flex items-center gap-3 hover:bg-cyan-900/10 cursor-help transition" title="Verified">
+                                    <i class="ri-verified-badge-fill text-cyan-400"></i>
+                                    <span class="text-sm font-mono text-gray-300">Adv Excel (Coursera)</span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- SECTION 9: FOOTER -->
-        <footer class="bg-black/95 py-32 border-t border-gray-900 relative z-20">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-5xl md:text-9xl font-hero font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-900 mb-12 opacity-50 hover:opacity-100 transition duration-500 cursor-pointer">
-                    LET'S TALK
+            <!-- FOOTER -->
+            <footer class="h-screen flex flex-col justify-center items-center bg-black relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent"></div>
+                <h2 class="text-[12vw] font-hero font-bold leading-none text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-900 opacity-20 hover:opacity-100 transition duration-700 cursor-none relative z-10">
+                    CONNECT
                 </h2>
-                
-                <div class="flex flex-wrap justify-center gap-8 mb-16">
-                    <a href="https://linkedin.com/in/ritesh-yadav-49b026202" class="px-10 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition uppercase tracking-widest text-xs font-bold">LinkedIn</a>
-                    <a href="https://github.com/riteshhhx" class="px-10 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition uppercase tracking-widest text-xs font-bold">GitHub</a>
-                    <a href="mailto:arritesh123@gmail.com" class="px-10 py-4 border border-white/20 rounded-full hover:bg-white hover:text-black transition uppercase tracking-widest text-xs font-bold">Email</a>
+                <div class="flex gap-8 mt-12 relative z-10">
+                    <a href="#" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">LinkedIn</a>
+                    <a href="#" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">GitHub</a>
+                    <a href="#" class="text-xs font-bold tracking-widest hover:text-cyan-400 transition uppercase">Email</a>
                 </div>
+            </footer>
 
-                <div class="text-gray-600 text-xs font-mono uppercase tracking-widest">
-                    &copy; 2024 Ritesh Yadav. Engineered for the Future.
-                </div>
-            </div>
-        </footer>
-
+        </div>
     </div>
 
     <!-- SCRIPTS -->
@@ -795,161 +445,101 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Loader
+        // Preloader
         window.addEventListener("load", () => {
             const tl = gsap.timeline();
-            tl.to(".loader", { yPercent: -100, duration: 1.2, ease: "power4.inOut", delay: 0.5 })
-              .to(".hero-anim", { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out" }, "-=0.5")
-              .to("#hero-char", { opacity: 1, x: 0, duration: 1.5, ease: "power2.out" }, "-=1");
-              
-             // Set initial playback speed
-             document.querySelectorAll('video').forEach(vid => vid.playbackRate = 0.8);
+            tl.to(".loader", { yPercent: -100, duration: 1, ease: "power4.inOut" })
+              .from(".hero-elem", { y: 50, opacity: 0, duration: 1, stagger: 0.1, ease: "power3.out" }, "-=0.5");
+            
+            // Initial Video Speed
+            document.querySelectorAll('video').forEach(v => v.playbackRate = 0.7);
         });
 
-        // Parallax
-        gsap.to("#hero-char", {
-            scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true },
-            yPercent: 15
+        // Custom Cursor Logic
+        const cursorDot = document.querySelector(".cursor-dot");
+        const cursorOutline = document.querySelector(".cursor-outline");
+
+        window.addEventListener("mousemove", (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Dot follows instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows with delay
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
         });
 
-        // Video Transitions Logic
-        const videos = document.querySelectorAll('.video-layer');
-        
-        ScrollTrigger.create({
-            trigger: "#about",
-            start: "top center",
-            onEnter: () => switchVideo(0) 
-        });
+        // Background Video Switcher
+        const videos = {
+            hero: document.getElementById('vid-hero'),
+            travel: document.getElementById('vid-travel'),
+            cloud: document.getElementById('vid-cloud')
+        };
 
-        ScrollTrigger.create({
-            trigger: "#immersive",
-            start: "top center", 
-            onEnter: () => switchVideo(1), 
-            onLeaveBack: () => switchVideo(0)
-        });
-        
-         ScrollTrigger.create({
-            trigger: "#experience",
-            start: "top center", 
-            onEnter: () => switchVideo(2), 
-            onLeaveBack: () => switchVideo(1)
-        });
+        function activateVideo(vidId) {
+            Object.values(videos).forEach(v => v.classList.remove('active'));
+            videos[vidId].classList.add('active');
+            videos[vidId].play();
+        }
 
-        function switchVideo(index) {
-            videos.forEach((vid, i) => {
-                if (i === index) {
-                    vid.classList.add('active');
-                    vid.play(); 
-                } else {
-                    vid.classList.remove('active');
+        ScrollTrigger.create({ trigger: "#hero", start: "top center", onEnter: () => activateVideo('hero'), onEnterBack: () => activateVideo('hero') });
+        ScrollTrigger.create({ trigger: "#skills", start: "top center", onEnter: () => activateVideo('travel'), onEnterBack: () => activateVideo('travel') });
+        ScrollTrigger.create({ trigger: "#work", start: "top center", onEnter: () => activateVideo('cloud'), onEnterBack: () => activateVideo('cloud') });
+
+        // Sticky Profile Text Fade Logic
+        const revealElements = document.querySelectorAll(".scroll-reveal");
+        revealElements.forEach(el => {
+            gsap.to(el, {
+                opacity: 1,
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 60%",
+                    end: "bottom 60%",
+                    toggleActions: "play reverse play reverse"
                 }
             });
-        }
-        
-        // Text Scramble Effect for Section 4
-        ScrollTrigger.create({
-            trigger: "#immersive",
-            start: "top 70%",
-            onEnter: () => {
-                const textElement = document.getElementById("scramble-text");
-                const finalWord = "CHAOS";
-                const words = ["NOISE", "DATA", "SIGNAL", "INSIGHT", "CHAOS"];
-                let step = 0;
-                
-                let interval = setInterval(() => {
-                    textElement.innerText = words[step];
-                    textElement.setAttribute('data-text', words[step]); 
-                    step++;
-                    if (step >= words.length) {
-                        clearInterval(interval);
-                        textElement.innerText = "STRATEGY"; // Final transform
-                        textElement.classList.add("text-cyan-400"); 
-                    }
-                }, 300);
-            }
         });
 
-        // Animations for Sections
-        const fadeUpSections = ["#about", "#skills", "#experience", "#archives", "#achievements"];
-        fadeUpSections.forEach(section => {
-            gsap.from(section + " h2", {
-                scrollTrigger: { trigger: section, start: "top 85%" },
-                y: 50, opacity: 0, duration: 1, ease: "power3.out"
-            });
-        });
+        // Horizontal Project Scroll with Skew
+        let proxy = { skew: 0 },
+            skewSetter = gsap.quickSetter(".project-card", "skewX", "deg"), 
+            clamp = gsap.utils.clamp(-20, 20);
 
-        // Stagger Skills
-        gsap.from(".skill-card", {
-            scrollTrigger: { trigger: "#skills", start: "top 75%" },
-            y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out"
-        });
-
-        // Stagger Experience Cards (Entrance)
-        gsap.from(".mission-card", {
-            scrollTrigger: { trigger: "#experience", start: "top 75%" },
-            y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out"
-        });
-
-        // Horizontal Scroll
-        let sections = gsap.utils.toArray("#horizontal-track div.shrink-0");
-        let scrollTween = gsap.to(sections, {
-            xPercent: -100 * (sections.length - 1),
+        let scrollTween = gsap.to("#project-track", {
+            xPercent: -60, // Move left
             ease: "none",
             scrollTrigger: {
                 trigger: "#work",
                 pin: true,
                 scrub: 1,
-                end: "+=3000", 
+                end: "+=3000",
+                onUpdate: (self) => {
+                    let skew = clamp(self.getVelocity() / -300);
+                    if (Math.abs(skew) > Math.abs(proxy.skew)) {
+                        proxy.skew = skew;
+                        gsap.to(proxy, {skew: 0, duration: 0.8, ease: "power3", overwrite: true, onUpdate: () => skewSetter(proxy.skew)});
+                    }
+                }
             }
         });
 
-        // Mission Card Interactions (Accordion)
-        function toggleMission(card) {
-            const content = card.querySelector(".content-wrapper");
-            const icon = card.querySelector(".toggle-icon");
-            const allCards = document.querySelectorAll(".mission-card");
-            
-            const isActive = card.classList.contains("active");
+        // Animations on load
+        gsap.from(".holo-card", {
+            scrollTrigger: { trigger: "#skills", start: "top 80%" },
+            y: 50, opacity: 0, duration: 0.8, stagger: 0.1
+        });
 
-            // Close all other cards first
-            allCards.forEach(c => {
-                if(c !== card && c.classList.contains("active")) {
-                    gsap.to(c.querySelector(".content-wrapper"), {
-                        height: 0,
-                        opacity: 0,
-                        duration: 0.5,
-                        ease: "power2.out"
-                    });
-                    c.classList.remove("active");
-                }
-            });
+        // Trophy Entrance
+        gsap.from(".trophy-case", {
+            scrollTrigger: { trigger: "#achievements", start: "top 80%" },
+            scale: 0.5, opacity: 0, duration: 0.5, stagger: 0.2, ease: "back.out(1.7)"
+        });
 
-            if (isActive) {
-                // Close clicked card
-                gsap.to(content, {
-                    height: 0,
-                    opacity: 0,
-                    duration: 0.5,
-                    ease: "power2.out"
-                });
-                card.classList.remove("active");
-            } else {
-                // Open clicked card
-                card.classList.add("active");
-                
-                // Correct GSAP Expansion Logic
-                gsap.fromTo(content, 
-                    { height: 0, opacity: 0 },
-                    { height: "auto", opacity: 1, duration: 0.6, ease: "power2.out" }
-                );
-                
-                // Stagger List Items
-                gsap.fromTo(content.querySelectorAll("li"), 
-                    { x: -20, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.2 }
-                );
-            }
-        }
     </script>
 </body>
 </html>
