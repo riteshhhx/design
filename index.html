@@ -13,14 +13,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
+    <!-- Icons (RemixIcon + FontAwesome for Brands) -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
             --primary: #5236d2; /* Purple from video */
             --accent: #00f0ff;  /* Cyberpunk Cyan */
             --dark: #0f0f13;
+            --card-bg: #131318;
         }
 
         body {
@@ -31,7 +33,7 @@
             cursor: default;
         }
 
-        h1, h2, .font-hero {
+        h1, h2, h3, .font-hero {
             font-family: 'Syncopate', sans-serif;
             text-transform: uppercase;
         }
@@ -54,7 +56,6 @@
             color: transparent;
         }
         
-        /* Video Background Utilities */
         .video-bg {
             position: absolute;
             top: 0;
@@ -63,6 +64,58 @@
             height: 100%;
             object-fit: cover;
             z-index: 0;
+        }
+        
+        .hero-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        
+        .hero-character {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 90vh;
+            max-width: 50vw;
+            object-fit: contain;
+            object-position: bottom right;
+            z-index: 1;
+            mask-image: linear-gradient(to left, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to left, black 60%, transparent 100%);
+            opacity: 0;
+            filter: drop-shadow(0 0 20px rgba(82, 54, 210, 0.3));
+        }
+
+        /* Skill Card Hover Effect */
+        .skill-card {
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .skill-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+        .skill-card:hover i {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Timeline */
+        .timeline-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
         }
 
         /* Loader */
@@ -89,12 +142,13 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center mix-blend-difference text-white">
+    <nav class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center mix-blend-difference text-white backdrop-blur-sm bg-black/10">
         <div class="font-hero font-bold text-xl tracking-tighter">RY.</div>
         <div class="hidden md:flex gap-8 text-xs font-bold tracking-widest uppercase">
-            <a href="#about" class="hover:text-cyan-400 transition">The Analyst</a>
+            <a href="#about" class="hover:text-cyan-400 transition">Profile</a>
+            <a href="#skills" class="hover:text-cyan-400 transition">Capabilities</a>
+            <a href="#experience" class="hover:text-cyan-400 transition">Mission Log</a>
             <a href="#work" class="hover:text-cyan-400 transition">Projects</a>
-            <a href="#skills" class="hover:text-cyan-400 transition">Factions</a>
         </div>
         <a href="mailto:arritesh123@gmail.com" class="border border-white px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-white hover:text-black transition duration-300">
             Contact
@@ -104,35 +158,30 @@
     <!-- MAIN CONTAINER -->
     <div id="main">
 
-        <!-- SECTION 1: HERO (Junction 1 - The Start) -->
-        <section class="relative h-screen w-full overflow-hidden flex items-center justify-center" id="hero">
-            <!-- Video Background 1: The City/Junction 1 -->
-            <video class="video-bg opacity-60 scale-110" id="hero-video" autoplay muted loop playsinline>
-                <!-- STARTING VIDEO -->
-                <source src="Video_Generation_Request_Fulfilled.mp4" type="video/mp4">
-            </video>
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0f0f13] via-transparent to-transparent z-0"></div>
+        <!-- SECTION 1: HERO (Junction 1) -->
+        <section class="relative h-screen w-full overflow-hidden flex items-center justify-center md:justify-start" id="hero">
+            <img src="ChatGPT%20Image%20Jan%2015%2C%202026%20at%2007_04_02%20PM.jpg" class="hero-bg-img scale-110" id="hero-bg" alt="Cyberpunk City Background">
+            <img src="portrait.jpg" class="hero-character hidden md:block" id="hero-char" alt="Ritesh Avatar">
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0f0f13] via-black/20 to-transparent z-0"></div>
 
-            <!-- Hero Text -->
-            <div class="relative z-10 text-center w-full px-4">
+            <div class="relative z-10 text-center md:text-left w-full px-6 md:pl-20 max-w-4xl">
                 <p class="text-cyan-400 font-bold tracking-[0.3em] text-xs mb-4 opacity-0 hero-anim">DATA ANALYST & STRATEGIST</p>
                 <h1 class="text-5xl md:text-8xl lg:text-9xl font-bold leading-none mix-blend-overlay opacity-0 hero-anim">
                     ANALYZE.<br>
                     PREDICT.<br>
                     OPTIMIZE.
                 </h1>
-                <p class="mt-8 max-w-md mx-auto text-gray-200 text-sm leading-relaxed opacity-0 hero-anim font-medium">
+                <p class="mt-8 max-w-md md:mx-0 mx-auto text-gray-200 text-sm leading-relaxed opacity-0 hero-anim font-medium drop-shadow-md">
                     Ritesh Yadav is a data professional focused on extracting actionable insights, 
                     automating dashboards, and empowering business decisions.
                 </p>
             </div>
         </section>
 
-        <!-- SECTION 2: INTRO (The "Familiar World" Section) -->
+        <!-- SECTION 2: INTRO (Profile) -->
         <section class="min-h-screen w-full bg-[#0f0f13] relative py-24 flex flex-col justify-center" id="about">
             <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-16">
-                
-                <!-- Left Image Card -->
                 <div class="w-full md:w-1/2 relative group">
                     <div class="absolute -inset-2 bg-gradient-to-r from-purple-600 to-cyan-400 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
                     <div class="relative overflow-hidden rounded-lg">
@@ -141,7 +190,6 @@
                     </div>
                 </div>
 
-                <!-- Right Text -->
                 <div class="w-full md:w-1/2 space-y-8">
                     <div class="text-xs font-bold text-purple-500 tracking-widest uppercase mb-2">001 // The Profile</div>
                     <h2 class="text-4xl md:text-6xl font-bold leading-tight">
@@ -149,14 +197,12 @@
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">DECODED BY DATA.</span>
                     </h2>
                     <p class="text-gray-400 text-lg leading-relaxed">
-                        Isolated within the noise of raw data, businesses struggle to avoid descending into chaos.
+                        Data and Business Analytics professional with experience in SQL, Python, dashboard development, and financial analysis. 
                         <br><br>
-                        As a <strong class="text-white">Financial & Data Analyst</strong>, I serve as an agent of clarity.
-                        From <span class="text-cyan-400">Reias India Real Estate</span> to <span class="text-cyan-400">The Times of India</span>, 
-                        I have built automated dashboards, optimized costs by 10%, and translated complex numbers into storytelling insights.
+                        Skilled in extracting, cleaning, and analyzing large datasets to convert model outputs into actionable business insights. 
+                        Experienced in working with cross-functional teams, performing analytical QA, and presenting insights to stakeholders.
                     </p>
                     
-                    <!-- Stats Grid -->
                     <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-800">
                         <div>
                             <div class="text-3xl font-hero font-bold text-white">15%</div>
@@ -171,38 +217,136 @@
             </div>
         </section>
 
-        <!-- SECTION 3: IMMERSIVE VIDEO (Travelling to Junction 2) -->
+        <!-- SECTION 3: SKILLS (Capabilities) -->
+        <section class="py-24 bg-[#0f0f13] relative" id="skills">
+            <div class="container mx-auto px-6">
+                <div class="mb-16">
+                    <div class="text-xs font-bold text-cyan-400 tracking-widest uppercase mb-2">002 // The Arsenal</div>
+                    <h2 class="text-4xl md:text-6xl font-bold text-white">CAPABILITIES</h2>
+                </div>
+
+                <!-- Skill Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Tech Stack -->
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fab fa-python text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">Python</h3>
+                        <p class="text-xs text-gray-400">Pandas, NumPy, EDA</p>
+                    </div>
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fas fa-database text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">SQL</h3>
+                        <p class="text-xs text-gray-400">Extraction, Cleaning</p>
+                    </div>
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fas fa-brain text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">Gen AI</h3>
+                        <p class="text-xs text-gray-400">LLMs, Prompt Eng.</p>
+                    </div>
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fas fa-chart-line text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">Finance</h3>
+                        <p class="text-xs text-gray-400">Modeling, Risk Mgmt</p>
+                    </div>
+
+                    <!-- Tools -->
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fas fa-chart-bar text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">Power BI</h3>
+                        <p class="text-xs text-gray-400">Dashboarding, DAX</p>
+                    </div>
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fas fa-file-excel text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">Excel</h3>
+                        <p class="text-xs text-gray-400">Advanced, VBA</p>
+                    </div>
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fas fa-search text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">Looker</h3>
+                        <p class="text-xs text-gray-400">Google Cloud BI</p>
+                    </div>
+                    <div class="skill-card p-8 rounded-xl flex flex-col items-center text-center group">
+                        <i class="fas fa-comments text-4xl text-gray-500 mb-4 transition-colors"></i>
+                        <h3 class="text-xl font-bold mb-2">Strategy</h3>
+                        <p class="text-xs text-gray-400">Communication, QA</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: IMMERSIVE VIDEO TRANSITION -->
         <section class="h-screen w-full relative overflow-hidden flex items-center justify-center bg-black" id="immersive">
-            <!-- Video Background 2: The Travelling/Car Video -->
             <video class="video-bg opacity-50" autoplay muted loop playsinline>
-                <!-- TRAVELLING VIDEO -->
                 <source src="Video_Generation_From_Junction.mp4" type="video/mp4">
             </video>
             
             <div class="z-10 text-center max-w-4xl px-6 relative">
                 <h2 class="text-3xl md:text-5xl font-bold leading-tight uppercase mb-8">
-                    You are a Decision Maker.<br>
-                    <span class="text-purple-500">Will you choose to guess?</span><br>
-                    Or will you choose to <span class="text-cyan-400">Know?</span>
+                    Transforming Uncertainty<br>
+                    <span class="text-purple-500">Into Strategy</span>
                 </h2>
-                <p class="text-gray-200 bg-black/50 p-4 rounded-lg inline-block backdrop-blur-sm">
-                    Leveraging Python, SQL, and Power BI to transform uncertainty into strategy.
-                </p>
+                <div class="flex gap-4 justify-center">
+                    <span class="px-4 py-2 bg-purple-900/50 border border-purple-500 rounded text-xs font-bold tracking-widest uppercase">Analysis</span>
+                    <span class="px-4 py-2 bg-cyan-900/50 border border-cyan-500 rounded text-xs font-bold tracking-widest uppercase">Prediction</span>
+                    <span class="px-4 py-2 bg-pink-900/50 border border-pink-500 rounded text-xs font-bold tracking-widest uppercase">Growth</span>
+                </div>
             </div>
         </section>
 
-        <!-- SECTION 4: HORIZONTAL SCROLL (The "Collectibles" Section) -->
+        <!-- SECTION 5: EXPERIENCE (Mission Log) -->
+        <section class="py-24 bg-[#0f0f13] relative" id="experience">
+            <div class="container mx-auto px-6 max-w-5xl">
+                <div class="mb-16">
+                    <div class="text-xs font-bold text-purple-500 tracking-widest uppercase mb-2">003 // Mission Log</div>
+                    <h2 class="text-4xl md:text-6xl font-bold text-white">EXPERIENCE</h2>
+                </div>
+
+                <div class="relative pl-8 md:pl-12 border-l border-gray-800 space-y-16">
+                    <!-- Job 1 -->
+                    <div class="relative experience-item">
+                        <div class="absolute -left-[41px] md:-left-[57px] top-0 w-5 h-5 bg-purple-600 rounded-full border-4 border-[#0f0f13]"></div>
+                        <div class="mb-2 flex flex-col md:flex-row md:items-center justify-between">
+                            <h3 class="text-2xl font-bold text-white">Financial Analyst</h3>
+                            <span class="text-sm font-mono text-cyan-400">2023 – 2024</span>
+                        </div>
+                        <div class="text-gray-400 mb-4 font-bold uppercase tracking-wide">Reias India Real Estate Pvt. Ltd</div>
+                        <ul class="space-y-3 text-gray-300 list-disc pl-5">
+                            <li>Extracted and analyzed financial/operational data to support strategic business decisions.</li>
+                            <li>Built automated revenue/cost dashboards in Excel/Power BI, reducing reporting turnaround time by 15%.</li>
+                            <li>Performed data validation checks and identified cost drivers, leading to a 10% reduction in unnecessary costs.</li>
+                            <li>Prepared insight-driven presentations for management and identified control gaps.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Job 2 -->
+                    <div class="relative experience-item">
+                        <div class="absolute -left-[41px] md:-left-[57px] top-0 w-5 h-5 bg-cyan-600 rounded-full border-4 border-[#0f0f13]"></div>
+                        <div class="mb-2 flex flex-col md:flex-row md:items-center justify-between">
+                            <h3 class="text-2xl font-bold text-white">Sales & Marketing Analyst (Intern)</h3>
+                            <span class="text-sm font-mono text-cyan-400">Jun 2024 – Jul 2024</span>
+                        </div>
+                        <div class="text-gray-400 mb-4 font-bold uppercase tracking-wide">The Times of India</div>
+                        <ul class="space-y-3 text-gray-300 list-disc pl-5">
+                            <li>Analyzed customer data and campaign performance metrics to optimize marketing strategies.</li>
+                            <li>Created weekly dashboards and reporting decks for cross-functional teams.</li>
+                            <li>Strengthened communication required for client discussions and requirement capture.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: PROJECTS (Horizontal Scroll) -->
         <section class="py-20 bg-[#0f0f13] overflow-hidden" id="work">
             <div class="container mx-auto px-6 mb-12">
+                <div class="text-xs font-bold text-pink-500 tracking-widest uppercase mb-2">004 // The Works</div>
                 <h2 class="text-4xl md:text-7xl font-hero font-bold text-white mb-4">PROJECTS</h2>
-                <p class="text-purple-400 tracking-widest uppercase text-sm">Selected Works & Case Studies</p>
             </div>
 
-            <!-- The Horizontal Track -->
             <div class="flex flex-nowrap gap-8 pl-6 md:pl-20 pb-20 w-max" id="horizontal-track">
                 
                 <!-- Card 1 -->
-                <div class="w-[85vw] md:w-[600px] h-[400px] md:h-[500px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-purple-500 transition duration-500 group relative overflow-hidden shrink-0">
+                <div class="w-[85vw] md:w-[600px] h-[450px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-purple-500 transition duration-500 group relative overflow-hidden shrink-0">
                     <div class="absolute top-0 right-0 p-32 bg-purple-600 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-40 transition"></div>
                     <div>
                         <div class="flex justify-between items-start mb-6">
@@ -210,12 +354,14 @@
                             <i class="ri-arrow-right-up-line text-2xl text-gray-500 group-hover:text-cyan-400 transition"></i>
                         </div>
                         <h3 class="text-3xl font-bold mb-2">Thermo-Lock Pro</h3>
-                        <p class="text-gray-400 text-sm">Cost Accounting & Target Costing</p>
+                        <p class="text-gray-400 text-sm font-mono">Cost Accounting & Target Costing</p>
                     </div>
                     <div class="relative z-10">
-                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
-                            Conducted detailed cost breakdown of material and labor. Identified gaps vs target cost and proposed value-engineering strategies.
-                        </p>
+                        <ul class="text-gray-300 text-sm mb-6 space-y-2 list-disc pl-4">
+                            <li>Conducted detailed cost breakdown of materials, labor, and overheads.</li>
+                            <li>Identified cost gaps vs target cost using value engineering.</li>
+                            <li>Modeled cost-reduction scenarios improving cost-to-value ratio.</li>
+                        </ul>
                         <div class="flex gap-2">
                             <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Excel</span>
                             <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Cost Analysis</span>
@@ -224,7 +370,7 @@
                 </div>
 
                 <!-- Card 2 -->
-                <div class="w-[85vw] md:w-[600px] h-[400px] md:h-[500px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-cyan-500 transition duration-500 group relative overflow-hidden shrink-0">
+                <div class="w-[85vw] md:w-[600px] h-[450px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-cyan-500 transition duration-500 group relative overflow-hidden shrink-0">
                     <div class="absolute top-0 right-0 p-32 bg-cyan-600 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-40 transition"></div>
                     <div>
                         <div class="flex justify-between items-start mb-6">
@@ -232,12 +378,14 @@
                             <i class="ri-arrow-right-up-line text-2xl text-gray-500 group-hover:text-cyan-400 transition"></i>
                         </div>
                         <h3 class="text-3xl font-bold mb-2">GenAI Analytics</h3>
-                        <p class="text-gray-400 text-sm">Forage Simulation</p>
+                        <p class="text-gray-400 text-sm font-mono">Forage Simulation</p>
                     </div>
                     <div class="relative z-10">
-                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
-                            Conducted EDA and risk profiling. Interpreted ML outputs for delinquency prediction and prepared analytical QA notes.
-                        </p>
+                        <ul class="text-gray-300 text-sm mb-6 space-y-2 list-disc pl-4">
+                            <li>Conducted EDA and risk profiling on large datasets.</li>
+                            <li>Interpreted ML outputs for delinquency prediction.</li>
+                            <li>Prepared analytical QA notes and strategy reports.</li>
+                        </ul>
                         <div class="flex gap-2">
                             <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Python</span>
                             <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">EDA</span>
@@ -247,7 +395,7 @@
                 </div>
 
                 <!-- Card 3 -->
-                <div class="w-[85vw] md:w-[600px] h-[400px] md:h-[500px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-pink-500 transition duration-500 group relative overflow-hidden shrink-0">
+                <div class="w-[85vw] md:w-[600px] h-[450px] bg-[#1a1a1f] rounded-2xl p-8 flex flex-col justify-between border border-gray-800 hover:border-pink-500 transition duration-500 group relative overflow-hidden shrink-0">
                     <div class="absolute top-0 right-0 p-32 bg-pink-600 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-40 transition"></div>
                     <div>
                         <div class="flex justify-between items-start mb-6">
@@ -255,12 +403,14 @@
                             <i class="ri-arrow-right-up-line text-2xl text-gray-500 group-hover:text-cyan-400 transition"></i>
                         </div>
                         <h3 class="text-3xl font-bold mb-2">Financial Dashboards</h3>
-                        <p class="text-gray-400 text-sm">Portfolio Project</p>
+                        <p class="text-gray-400 text-sm font-mono">Portfolio Project</p>
                     </div>
                     <div class="relative z-10">
-                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
-                            Built multi-year financial trend dashboards. Automated visual reporting for KPIs and translated raw data into decision-oriented insights.
-                        </p>
+                        <ul class="text-gray-300 text-sm mb-6 space-y-2 list-disc pl-4">
+                            <li>Built multi-year revenue–expense–profit dashboards.</li>
+                            <li>Performed trend analysis and simulated "Early Warning Signals".</li>
+                            <li>Automated visual reporting for KPIs.</li>
+                        </ul>
                         <div class="flex gap-2">
                             <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Power BI</span>
                             <span class="px-3 py-1 bg-white/5 rounded-full text-xs border border-white/10">Visualization</span>
@@ -271,7 +421,60 @@
             </div>
         </section>
 
-        <!-- SECTION 5: FOOTER -->
+        <!-- SECTION 7: EDUCATION & CERTS (Archives) -->
+        <section class="py-24 bg-black border-t border-gray-900" id="archives">
+            <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
+                
+                <!-- Education -->
+                <div>
+                    <div class="text-xs font-bold text-gray-500 tracking-widest uppercase mb-6">005 // Academics</div>
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">MBA in Business Analytics</h3>
+                            <p class="text-purple-400">Mittal School of Business, LPU</p>
+                            <p class="text-gray-500 text-sm">2025 – Present</p>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Bachelor of Commerce (B.Com)</h3>
+                            <p class="text-purple-400">Mittal School of Business, LPU</p>
+                            <p class="text-gray-500 text-sm">Graduated 2024</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Achievements</h3>
+                            <ul class="text-gray-400 text-sm mt-2 space-y-1">
+                                <li>🏆 Gold Medal – All India Football Championship (2019)</li>
+                                <li>🥈 1st Runner-Up – State Olympic Games (2019)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div>
+                    <div class="text-xs font-bold text-gray-500 tracking-widest uppercase mb-6">006 // Licenses</div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="bg-[#131318] p-4 rounded border border-gray-800 flex items-center gap-4">
+                            <i class="fas fa-certificate text-cyan-500"></i>
+                            <span class="text-gray-300">GenAI Powered Data Analytics (Forage)</span>
+                        </div>
+                        <div class="bg-[#131318] p-4 rounded border border-gray-800 flex items-center gap-4">
+                            <i class="fas fa-certificate text-cyan-500"></i>
+                            <span class="text-gray-300">Data Science with Generative AI (Physics Wallah)</span>
+                        </div>
+                        <div class="bg-[#131318] p-4 rounded border border-gray-800 flex items-center gap-4">
+                            <i class="fas fa-certificate text-cyan-500"></i>
+                            <span class="text-gray-300">Introduction to Looker (Google Cloud)</span>
+                        </div>
+                        <div class="bg-[#131318] p-4 rounded border border-gray-800 flex items-center gap-4">
+                            <i class="fas fa-certificate text-cyan-500"></i>
+                            <span class="text-gray-300">Introduction to MS Excel (Coursera)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: FOOTER -->
         <footer class="bg-black py-24 border-t border-gray-900 relative">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-5xl md:text-9xl font-hero font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-900 mb-8 opacity-50 hover:opacity-100 transition duration-500 cursor-pointer">
@@ -296,66 +499,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script>
-        // Register GSAP ScrollTrigger
         gsap.registerPlugin(ScrollTrigger);
 
-        // Loader Animation
+        // Loader
         window.addEventListener("load", () => {
             const tl = gsap.timeline();
-            tl.to(".loader", {
-                yPercent: -100,
-                duration: 1.2,
-                ease: "power4.inOut",
-                delay: 0.5
-            })
-            .to(".hero-anim", {
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                stagger: 0.2,
-                ease: "power3.out"
-            }, "-=0.5");
+            tl.to(".loader", { yPercent: -100, duration: 1.2, ease: "power4.inOut", delay: 0.5 })
+              .to(".hero-anim", { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out" }, "-=0.5")
+              .to("#hero-char", { opacity: 1, x: 0, duration: 1.5, ease: "power2.out" }, "-=1");
         });
 
-        // Parallax Hero
+        // Parallax
         gsap.to("#hero-bg", {
-            scrollTrigger: {
-                trigger: "#hero",
-                start: "top top",
-                end: "bottom top",
-                scrub: true
-            },
-            yPercent: 30,
-            scale: 1.2
+            scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true },
+            yPercent: 30, scale: 1.2
+        });
+        gsap.to("#hero-char", {
+            scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true },
+            yPercent: 10
         });
 
-        // Intro Section Text Reveal
-        gsap.from("#about h2", {
-            scrollTrigger: {
-                trigger: "#about",
-                start: "top 80%",
-            },
-            y: 50,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out"
+        // Animations for Sections
+        const fadeUpSections = ["#about", "#skills", "#experience", "#archives"];
+        fadeUpSections.forEach(section => {
+            gsap.from(section + " h2", {
+                scrollTrigger: { trigger: section, start: "top 80%" },
+                y: 50, opacity: 0, duration: 1, ease: "power3.out"
+            });
         });
 
-        // Immersive Section Scale Effect
-        gsap.from("#immersive h2", {
-            scrollTrigger: {
-                trigger: "#immersive",
-                start: "top 70%",
-                end: "bottom top",
-                scrub: 1
-            },
-            scale: 0.8,
-            opacity: 0
+        // Stagger Skills
+        gsap.from(".skill-card", {
+            scrollTrigger: { trigger: "#skills", start: "top 70%" },
+            y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out"
         });
 
-        // Horizontal Scroll for Projects
+        // Stagger Experience
+        gsap.from(".experience-item", {
+            scrollTrigger: { trigger: "#experience", start: "top 70%" },
+            x: -30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out"
+        });
+
+        // Horizontal Scroll
         let sections = gsap.utils.toArray("#horizontal-track div.shrink-0");
-        
         let scrollTween = gsap.to(sections, {
             xPercent: -100 * (sections.length - 1),
             ease: "none",
@@ -363,7 +549,6 @@
                 trigger: "#work",
                 pin: true,
                 scrub: 1,
-                // Adjust this end value to control how long the scroll takes
                 end: "+=3000", 
             }
         });
